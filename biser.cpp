@@ -174,16 +174,15 @@ public:
 		prev->next = current->next;
 		delete current;
 	}
-	Student findItem(int position){
+	Student findItem(int position) {
 		Node* tmpHead = head;
-		Node* current = NULL;
-		for (int i = 0; i < position; i++){
-			current = tmpHead;
-			tmpHead = tmpHead->next;
-		}
-		//current->value.print();
-		return current->value;
+		int index = 0;
+		while ( tmpHead && index < position )
+			tmpHead = tmpHead->next , index++;
+
+	    return  index == position ? tmpHead->value : NULL;
 	}
+
 	void insertItem(Student stud, int count){
 		Node *insertItem = new Node();
 		insertItem->value = stud;
