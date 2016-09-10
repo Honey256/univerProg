@@ -140,13 +140,13 @@ public:
 		while(tmpHead){
 			prev = tmpHead;
 			tmpHead = tmpHead->next;
-		}
+		}	
 		prev->next = newItem;
 		newItem->next = NULL;
 	}
 	void printList(){
 		Node *tmpNode = head;
-		int count = 1;
+		int count = 0;
 		while(tmpNode){
 			std::cout << count << ") ";
 			tmpNode->value.print();
@@ -163,17 +163,14 @@ public:
 			delete prev;
 			return;
 		}
-		while (current != NULL){
 
-			if(current->value != stud){
-				prev = current;
-				current = current->next;
-			}
-			else{
-				break;
-			}
+		while (current != NULL && current->value != stud){
+
+			prev = current;
+			current = current->next;
 
 		}
+
 		prev->next = current->next;
 		delete current;
 	}
@@ -190,13 +187,23 @@ public:
 	void insertItem(Student stud, int count){
 		Node *insertItem = new Node();
 		insertItem->value = stud;
+
+		if (count == 0) {
+			insertItem -> next = head;
+			head = insertItem;	
+			return;
+		}
+
 		Node *tmpHead = head;
-		for (int i = 1; i < count; i++){
-			if (i == count-1){
-				insertItem->next = tmpHead->next;
-				tmpHead->next = insertItem;
-			}
-			tmpHead = tmpHead->next;
+		int index = 1;
+
+
+		while ( tmpHead && index < count )
+				tmpHead = tmpHead->next, index++;
+
+		if ( index == count ) {
+			insertItem->next = tmpHead->next;
+		 	tmpHead->next = insertItem;
 		}
 
 	}
