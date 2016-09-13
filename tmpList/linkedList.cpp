@@ -34,6 +34,10 @@
         }
     }
     void LinkedList::removeItem(Student stud){
+        if (head == NULL){
+            std::cout << "empty list" << std::endl;
+            return;
+        }
         Node * prev = head;
         Node * current = head->next;
         if (head->value == stud){
@@ -42,16 +46,21 @@
             return;
         }
 
-        while (current != NULL && current->value != stud){
-            prev = current;
-            current = current->next;
-
+        while (current != NULL){
+            if (current->value == stud){
+                 prev->next = current->next;
+                 delete current;
+            } else{
+                prev = current;
+                current = current->next;
+            }
         }
-
-        prev->next = current->next;
-        delete current;
     }
     Student* LinkedList::getItem(int position) {
+        if (head == NULL){
+            std::cout << "empty list" << std::endl;
+            return NULL;
+        }
         Node* tmpHead = head;
         int index = 0;
         while ( tmpHead && index < position ){
