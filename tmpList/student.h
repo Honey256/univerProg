@@ -11,17 +11,8 @@ private:
     std::string major;
 
 public:
-    bool operator==( const Student& rhs ){
-        return (*this).getName() == rhs.getName()
-            && (*this).getLastName() == rhs.getLastName()
-            && (*this).getAge() == rhs.getAge()
-            && (*this).getDept() == rhs.getDept()
-            && (*this).getMajor() == rhs.getMajor();
-    }
-
-    bool operator!=( const Student& rhs ){
-        return !((*this) == rhs);
-    }
+    bool operator==( const Student& rhs );
+    bool operator!=( const Student& rhs );
 
     Student();
 
