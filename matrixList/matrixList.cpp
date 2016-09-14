@@ -89,6 +89,73 @@ public:
        	}
     }
 
+    void removeLine( int line ){
+
+    	Node *tmpHead = head;
+    	Node *tmpPtr = NULL;
+
+    	if ( line == 1 ){
+    		head = head->down;
+
+    		while ( tmpHead ){
+
+    			tmpPtr = tmpHead->down;
+    			tmpPtr->up = NULL;
+    			tmpPtr = tmpHead;
+    			tmpHead = tmpHead->next;
+
+    			delete tmpPtr;
+    			tmpPtr = NULL;
+    		}
+    		return;
+    	}
+
+    	int index = 1;
+    	while ( tmpHead->down ){
+
+    		tmpPtr = tmpHead;
+    		tmpHead = tmpHead->down;
+    		index++;
+    	}
+
+ 
+    	if ( line == index ){
+
+    		tmpHead = tmpPtr;
+    		tmpPtr = NULL;
+
+    		while( tmpHead ){
+
+    			tmpPtr = tmpHead->down;
+    			delete tmpPtr;
+    			tmpPtr = NULL;
+    			tmpHead->down = NULL;
+    			tmpHead = tmpHead->next;
+    		}
+    	}
+
+    	tmpHead = head;
+    	tmpPtr = NULL;
+
+		if ( line > 1 && line < index ){
+
+			for ( int i = 1; i < line; i++ ){
+				tmpPtr = tmpHead;
+				tmpHead = tmpHead->down;
+			}
+
+			tmpHead = tmpHead->down;
+
+			while ( tmpPtr && tmpHead ){
+
+				tmpPtr->down = tmpHead;
+				delete tmpHead->up;
+				tmpHead->up = tmpPtr;
+				tmpHead = tmpHead->next;
+				tmpPtr = tmpPtr->next;
+			}
+		}
+    }
 
 
     void printList(){
@@ -143,5 +210,11 @@ int main(){
     l->addItem(54, 5, 4);
 
     l->printList();
+
+    l->removeLine(3);
+    std::cout << std::endl << std::endl;
+
+    l->printList();
+
     return 0;
 }
