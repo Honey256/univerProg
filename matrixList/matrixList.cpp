@@ -141,6 +141,7 @@ int main(){
     l->addItem(52, 5, 2);
     l->addItem(53, 5, 3);
     l->addItem(54, 5, 4);
+    
     l->printList();
     return 0;
 }
