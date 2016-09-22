@@ -1,5 +1,8 @@
 
-static const std::string unknown = "unknown";
+#include <iostream>
+#include <string.h>
+
+
 
 class Student{
 
@@ -68,4 +71,4 @@ public:
 
 };
 
-#include "student.cpp"
+

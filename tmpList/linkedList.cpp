@@ -1,3 +1,6 @@
+    
+    #include "linkedList.h"
+
     LinkedList::LinkedList(){
         this->head = NULL;
     }

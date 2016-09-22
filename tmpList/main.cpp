@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string.h>
-#include "student.h"
+//#include "student.h"
 #include "linkedList.h"
+
 
 
 

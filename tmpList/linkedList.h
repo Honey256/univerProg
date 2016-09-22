@@ -1,3 +1,5 @@
+#include "student.h"
+
 class LinkedList{
 
  public:
@@ -28,4 +30,3 @@ class LinkedList{
     int findItem(Student &stud);
 };
 
-#include "linkedList.cpp"

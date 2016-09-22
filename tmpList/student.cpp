@@ -1,3 +1,8 @@
+
+#include "student.h"
+
+    const std::string unknown = "unknown";
+
     bool Student::operator==( const Student &rhs ){
 
         return ( *this ).getName() == rhs.getName()
