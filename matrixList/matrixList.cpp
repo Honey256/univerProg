@@ -23,11 +23,36 @@ public:
 
     LinkedList(){
         this->head = NULL;
-
-
     }
 
-    ~LinkedList(){
+    LinkedList(const LinkedList& matrix){
+        
+        int row = 1;
+        int column = 1;
+
+        Node *tmpHead = matrix.head;
+
+        Node *tmpPtr = NULL;
+
+        while (tmpHead){
+
+            tmpPtr = tmpHead;
+            while(tmpPtr){
+
+                addItem(tmpPtr->value, row, column);
+
+                tmpPtr = tmpPtr->next;
+                column++;              
+            }
+
+            tmpHead = tmpHead->down;
+            row++;
+            column = 1;
+
+        }
+    }
+
+    ~LinkedList(){3
     }
 
     void addItem( int value, int line, int column ){
@@ -89,12 +114,12 @@ public:
        	}
     }
 
-    void removeLine( int line ){
+    void removeRow( int row ){
 
     	Node *tmpHead = head;
     	Node *tmpPtr = NULL;
 
-    	if ( line == 1 ){
+    	if ( row == 1 ){
     		head = head->down;
 
     		while ( tmpHead ){
@@ -119,7 +144,7 @@ public:
     	}
 
  
-    	if ( line == index ){
+    	if ( row == index ){
 
     		tmpHead = tmpPtr;
     		tmpPtr = NULL;
@@ -137,9 +162,9 @@ public:
     	tmpHead = head;
     	tmpPtr = NULL;
 
-		if ( line > 1 && line < index ){
+		if ( row > 1 && row < index ){
 
-			for ( int i = 1; i < line; i++ ){
+			for ( int i = 1; i < row; i++ ){
 				tmpPtr = tmpHead;
 				tmpHead = tmpHead->down;
 			}
@@ -156,6 +181,76 @@ public:
 			}
 		}
     }
+
+    void removeColumn( int column ){
+
+        Node *tmpHead = head;
+        Node *tmpPtr = NULL;
+
+        if ( column == 1 ){
+            head = head->next;
+
+            while ( tmpHead ){
+
+                tmpPtr = tmpHead->next;
+                tmpPtr->prev = NULL;
+                tmpPtr = tmpHead;
+                tmpHead = tmpHead->down;
+
+                delete tmpPtr;
+                tmpPtr = NULL;
+            }
+            return;
+        }
+
+        int index = 1;
+        while ( tmpHead->next ){
+
+            tmpPtr = tmpHead;
+            tmpHead = tmpHead->next;
+            index++;
+        }
+
+ 
+        if ( column == index ){
+
+            tmpHead = tmpPtr;
+            tmpPtr = NULL;
+
+            while( tmpHead ){
+
+                tmpPtr = tmpHead->next;
+                delete tmpPtr;
+                tmpPtr = NULL;
+                tmpHead->next = NULL;
+                tmpHead = tmpHead->down;
+            }
+        }
+
+        tmpHead = head;
+        tmpPtr = NULL;
+
+        if ( column > 1 && column < index ){
+
+            for ( int i = 1; i < column; i++ ){
+                tmpPtr = tmpHead;
+                tmpHead = tmpHead->next;
+            }
+
+            tmpHead = tmpHead->next;
+
+            while ( tmpPtr && tmpHead ){
+
+                tmpPtr->next = tmpHead;
+                delete tmpHead->prev;
+                tmpHead->prev = tmpPtr;
+                tmpHead = tmpHead->down;
+                tmpPtr = tmpPtr->down;
+            }
+        }
+    }
+
+
 
 
     void printList(){
@@ -176,6 +271,108 @@ public:
         }
     }
 
+
+   /* void mDet(LinkedList matrix1){
+        LinkedList *mat = new LinkedList(matrix1);
+        //mat->head->value = 5;
+        float tmpIndex = 0
+        Node *tmpHead = mat->head;
+        Node *tmpPtr = tmpHead;
+        tmpPtr =tmpPtr->next;
+        tmpPtr = tmpPtr->head;
+        while(tmpPtr){
+            tmpIndex = tmpHead->down->value / tmpHead->value;
+            tmpPtr->value = tmpPtr->value - (tmpPtr->up->value * tmpIndex);
+
+
+        }
+        //mat->printList();
+    }*/
+
+
+
+
+    void mAddit(LinkedList matrix1, LinkedList matrix2){
+       // std::cout << matrix1.head->value;
+
+        Node *tmpFirstHead = matrix1.head;
+        Node *tmpSecondHead = matrix2.head;
+        Node *tmpFirst = NULL;
+        Node *tmpSecond= NULL;
+
+        int row = 1;
+        int column = 1;
+        int tmpValue = 0;
+
+        while (tmpFirstHead){
+
+            tmpFirst = tmpFirstHead;
+            tmpSecond = tmpSecondHead;
+
+            while(tmpFirst){
+
+                tmpValue = tmpFirst->value + tmpSecond->value;
+
+                addItem(tmpValue, row, column);
+
+                tmpFirst = tmpFirst->next;
+                tmpSecond = tmpSecond->next;
+                column++;              
+            }
+
+            tmpFirstHead = tmpFirstHead->down;
+            tmpSecondHead = tmpSecondHead->down;
+            row++;
+            column = 1;
+
+        }
+    }
+
+    void mMult(LinkedList matrix1, LinkedList matrix2){
+
+        Node *tmpFirstHead = NULL;
+        Node *tmpSecondHead = NULL;
+
+        Node *tmpFirst = matrix1.head;
+        Node *tmpSecond = matrix2.head;
+
+        int tmpValue = 0;
+        int row = 1;
+        int column = 1;
+        while(tmpFirst){
+            while(tmpSecond){
+
+                tmpFirstHead = tmpFirst;
+                tmpSecondHead = tmpSecond;
+                while(tmpSecondHead && tmpFirstHead){
+                    tmpValue += tmpFirstHead->value * tmpSecondHead->value;
+                    tmpFirstHead = tmpFirstHead->next;
+                    tmpSecondHead = tmpSecondHead->down;
+                }
+                addItem(tmpValue, row, column);
+                tmpValue = 0;
+
+
+                tmpSecond = tmpSecond->next;
+                column++;
+
+
+            }
+            tmpSecond = matrix2.head;
+            tmpFirst = tmpFirst->down;
+            row++; 
+            column = 1;
+            
+
+        }
+    }
+
+    /*void mRev(LinkedList matrix1){
+    }*/
+
+
+
+
 };
 
 int main(){
@@ -183,38 +380,85 @@ int main(){
     LinkedList *l = new LinkedList();
     
    
+    LinkedList *matrix1 = new LinkedList();
+    
+   
 
-    l->addItem(11, 1, 1);
-    l->addItem(12, 1, 2);
-    l->addItem(13, 1, 3);
-    l->addItem(14, 1, 4);
+    matrix1->addItem(1, 1, 1);
+    matrix1->addItem(2, 1, 2);
+    matrix1->addItem(3, 1, 3);
+    matrix1->addItem(4, 1, 4);
 
-    l->addItem(21, 2, 1);
-    l->addItem(22, 2, 2);
-    l->addItem(23, 2, 3);
-    l->addItem(24, 2, 4);
+    matrix1->addItem(1, 2, 1);
+    matrix1->addItem(4, 2, 2);
+    matrix1->addItem(8, 2, 3);
+    matrix1->addItem(8, 2, 4);
 
-    l->addItem(31, 3, 1);
-    l->addItem(32, 3, 2);
-    l->addItem(33, 3, 3);
-    l->addItem(34, 3, 4);
+    matrix1->addItem(2, 3, 1);
+    matrix1->addItem(2, 3, 2);
+    matrix1->addItem(8, 3, 3);
+    matrix1->addItem(3, 3, 4);
 
-    l->addItem(41, 4, 1);
-    l->addItem(42, 4, 2);
-    l->addItem(43, 4, 3);
-    l->addItem(44, 4, 4);
+    matrix1->addItem(2, 4, 1);
+    matrix1->addItem(2, 4, 2);
+    matrix1->addItem(1, 4, 3);
+    matrix1->addItem(5, 4, 4);
 
-    l->addItem(51, 5, 1);
-    l->addItem(52, 5, 2);
-    l->addItem(53, 5, 3);
-    l->addItem(54, 5, 4);
+    LinkedList *matrix2= new LinkedList();
 
-    l->printList();
+    matrix2->addItem(1, 1, 1);
+    matrix2->addItem(0, 1, 2);
+    matrix2->addItem(0, 1, 3);
+    matrix2->addItem(0, 1, 4);
+    matrix2->addItem(0, 1, 5);
 
-    l->removeLine(3);
-    std::cout << std::endl << std::endl;
+    matrix2->addItem(0, 2, 1);
+    matrix2->addItem(1, 2, 2);
+    matrix2->addItem(0, 2, 3);
+    matrix2->addItem(0, 2, 4);
+    matrix2->addItem(0, 2, 5);
 
-    l->printList();
+    matrix2->addItem(0, 3, 1);
+    matrix2->addItem(0, 3, 2);
+    matrix2->addItem(1, 3, 3);
+    matrix2->addItem(0, 3, 4);
+    matrix2->addItem(0, 3, 5);
+
+    matrix2->addItem(0, 4, 1);
+    matrix2->addItem(0, 4, 2);
+    matrix2->addItem(0, 4, 3);
+    matrix2->addItem(1, 4, 4);
+    matrix2->addItem(0, 4, 5);
+
+
+
+
+    l->mDet(*matrix1);
+
+    /*matrix1->addItem(7, 1, 1);
+    matrix1->addItem(4, 1, 2);
+
+    matrix1->addItem(5, 2, 1);
+    matrix1->addItem(3, 2, 2);
+
+    matrix2->addItem(3, 1, 1);
+    matrix2->addItem(-4, 1, 2);
+
+    matrix2->addItem(-5, 2, 1);
+    matrix2->addItem(7, 2, 2);*/
+
+
+    //l->mMult(*matrix1, *matrix2);
+  //  l->printList();
+  // l->mAddit(*matrix1, *matrix2);
+   //l->printList();
+    //matrix1->newFn();
+   //l->printList();
+
+   // l->removeLine(3);
+   // std::cout << std::endl << std::endl;
+
+  //  l->printList();
 
     return 0;
 }
