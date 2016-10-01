@@ -488,30 +488,39 @@ public:
         int row = 1;
         int column = 1;
         while(tmpFirst){
+
             while(tmpSecond){
 
                 tmpFirstHead = tmpFirst;
                 tmpSecondHead = tmpSecond;
+
                 while(tmpSecondHead && tmpFirstHead){
+
                     tmpValue += tmpFirstHead->value * tmpSecondHead->value;
                     tmpFirstHead = tmpFirstHead->next;
                     tmpSecondHead = tmpSecondHead->down;
                 }
+
+                if (tmpValue > 0.99 && tmpValue < 1){
+                    tmpValue = 1;
+                }
+                if (tmpValue > -0.001 && tmpValue < 0.001) {
+                    tmpValue = 0;
+                }
+
                 addItem(tmpValue, row, column);
                 tmpValue = 0;
-
 
                 tmpSecond = tmpSecond->next;
                 column++;
 
-
             }
+
             tmpSecond = matrix2.head;
             tmpFirst = tmpFirst->down;
+
             row++; 
             column = 1;
-            
-
         }
     }  
 
@@ -645,17 +654,17 @@ int main(){
 
 
 
+    matrix1->printList();
+    std::cout << std::endl;
+
     LinkedList *l = new LinkedList();
-    
-    //std::cout << l->mDet(*matrix1);
-    l->mRev(*matrix1);
+    l->mRev(*matrix1);    
+    l->printList();
+    std::cout << std::endl;
 
     LinkedList *m = new LinkedList();
     m->mMult(*matrix1, *l);
-   // matrix1->printList();
-    //std::cout << l->mDet(*matrix1);
     m->printList();
-   // l->printList();
 
 
     return 0;

@@ -66,8 +66,19 @@ int main(){
     matrix1->addItem(0, 5, 3);
     matrix1->addItem(0, 5, 4);
     matrix1->addItem(1, 5, 5);*/
-
     matrix1->printList();
+    std::cout << std::endl;
+
+    LinkedList *l = new LinkedList();
+    l->mRev(*matrix1);    
+    l->printList();
+    std::cout << std::endl;
+
+    LinkedList *m = new LinkedList();
+    m->mMult(*matrix1, *l);
+    m->printList();
+
+    
 
     return 0;
 }

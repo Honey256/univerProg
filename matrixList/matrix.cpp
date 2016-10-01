@@ -251,46 +251,52 @@
         }
     }
 
-    void LinkedList::shuffle( Node *first, Node *second ){
+void LinkedList::shuffle(Node *first, Node *second){
 
         Node *tmpFirst = first;
         Node *tmpSecond = second;
         Node *tmpPtr = NULL;
 
-        if ( tmpFirst == NULL || tmpSecond == NULL ){return;}
+        if (tmpFirst == NULL || tmpSecond == NULL){return;}
 
 
 
-        while ( tmpFirst->prev ){
+        while (tmpFirst->prev){
             tmpFirst = tmpFirst->prev;
         }
 
-        while ( tmpSecond->prev ){
+        while (tmpSecond->prev){
             tmpSecond = tmpSecond->prev;
         }
 
-        if( tmpSecond->up == NULL ){
+        if(tmpSecond->up == NULL){
             head = tmpFirst;
         }
 
-        if ( tmpFirst->up == tmpSecond ){
-            tmpPtr = tmpFirst->up;
-            tmpFirst->up = tmpSecond->up;
-            tmpSecond->up = tmpSecond->down;
-            tmpSecond->down = tmpFirst->down;
-            tmpFirst->down = tmpPtr;
+        if (tmpFirst->up == tmpSecond){
+            while(tmpFirst){
+                tmpPtr = tmpFirst->up;
+                tmpFirst->up = tmpSecond->up;
+                tmpSecond->up = tmpSecond->down;
+                tmpSecond->down = tmpFirst->down;
+                tmpFirst->down = tmpPtr;
 
-            if( tmpFirst->up != NULL ){
-                tmpFirst->up->down = tmpFirst;
-            }
+                if(tmpFirst->up != NULL){
+                    tmpFirst->up->down = tmpFirst;
+                }
 
-            if( tmpSecond->down != NULL ){
-                tmpSecond->down->up = tmpSecond;
+                if(tmpSecond->down != NULL){
+                   tmpSecond->down->up = tmpSecond;
+                }
+                tmpFirst = tmpFirst->next;
+                tmpSecond = tmpSecond->next;
             }
             return;
+
+            
         }
 
-        while( tmpFirst ){
+        while(tmpFirst){
             tmpPtr = tmpSecond->down;
             tmpSecond->down = tmpFirst->down;
             tmpFirst->down = tmpPtr;
@@ -302,11 +308,11 @@
             tmpFirst->down->up = tmpFirst;
             tmpSecond->up->down = tmpSecond;
 
-            if( tmpFirst->up != NULL ){
+            if(tmpFirst->up != NULL){
                 tmpFirst->up->down = tmpFirst;
             }
 
-            if( tmpSecond->down != NULL ){
+            if(tmpSecond->down != NULL){
                 tmpSecond->down->up = tmpSecond;
             }
 
@@ -332,20 +338,18 @@
         while( tmpHead->next ){
 
             tmpLine = tmpHead->down;
-            if( tmpHead->value == 0 && tmpHead->down ){
-
-                if ( tmpLine->value == 0 ){
-
-                    if( tmpLine->down ){
+            if(tmpHead->value == 0 && tmpHead->down){
+                if (tmpLine->value == 0){
+                    if(tmpLine->down){
                         tmpLine = tmpLine->down;
                     } else {
                         return 0;
                     }
                 }
                 shuffle(tmpLine, tmpHead);
-
                 tmpHead = temp->next->down;
                 tmpLine = tmpHead->down;
+                //tmpMatrix->printList();
                 sign *= -1;
             }
        
@@ -389,7 +393,7 @@
         }
 
         tmpDet *= tmpHead->value;
-        if ( tmpDet != 0 ){
+        if (tmpDet != 0){
             tmpDet *= sign;
         }
         
@@ -454,7 +458,7 @@
         Node *tmpFirst = matrix1.head;
         Node *tmpSecond = matrix2.head;
 
-        float tmpValue = 0.0;
+        float tmpValue = 0;
         int row = 1;
         int column = 1;
 
@@ -469,6 +473,13 @@
                     tmpValue += tmpFirstHead->value * tmpSecondHead->value;
                     tmpFirstHead = tmpFirstHead->next;
                     tmpSecondHead = tmpSecondHead->down;
+                }
+
+                if (tmpValue > 0.99 && tmpValue < 1){
+                    tmpValue = 1;
+                }
+                if (tmpValue > -0.001 && tmpValue < 0.001) {
+                    tmpValue = 0;
                 }
 
                 addItem(tmpValue, row, column);
