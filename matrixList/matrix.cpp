@@ -1,32 +1,7 @@
-#include <iostream>
-#include <string.h>
+#include "matrix.h"
 
 
-class LinkedList{
-
-public:
-    struct Node{
-    	float value;
-        Node *next;
-        Node *prev;
-        Node *up;
-        Node *down;
-       
-
-
-    };
-
-private:
-    Node *head;
-
-public:
-
-    LinkedList(){
-
-        this->head = NULL;
-    }
-
-    LinkedList(const LinkedList& matrix){
+    LinkedList::LinkedList( const LinkedList& matrix ){
         
         int row = 1;
         int column = 1;
@@ -35,12 +10,12 @@ public:
 
         Node *tmpPtr = NULL;
 
-        while (tmpHead){
+        while ( tmpHead ){
 
             tmpPtr = tmpHead;
-            while(tmpPtr){
+            while( tmpPtr ){
 
-                addItem(tmpPtr->value, row, column);
+                addItem( tmpPtr->value, row, column );
 
                 tmpPtr = tmpPtr->next;
                 column++;              
@@ -53,15 +28,14 @@ public:
         }
     }
 
-    ~LinkedList(){
-    }
-
-    void addItem( float value, int line, int column ){
+    void LinkedList::addItem( float value, int line, int column ){
 		Node *newItem = new Node();
         newItem->value = value;
         Node *tmpHead = head;
         Node *tmpPtr = NULL;
-        if (line == 1 && column == 1){
+
+        if ( line == 1 && column == 1 ){
+
         	head = newItem;
         	newItem->next = NULL;
         	newItem->prev = NULL;
@@ -70,28 +44,36 @@ public:
 
 
         }
-        if (line == 1 && column > 1){
+
+        if ( line == 1 && column > 1 ){
+
       		while( tmpHead->next ){
             	tmpHead = tmpHead->next;
         	}
+
         	tmpHead->next = newItem;
         	newItem->prev = tmpHead;
         	newItem->up = NULL;
         	newItem->down = NULL;
         	newItem->next = NULL;
         }
-        if (line > 1 && column == 1){
+
+        if ( line > 1 && column == 1 ){
+
         	for ( int i = 1; i < line; i++ ){
         		tmpPtr = tmpHead;
         		tmpHead = tmpHead->down;
         	}
+
         	tmpPtr->down = newItem;
         	newItem->up = tmpPtr;
         	newItem->prev = NULL;
         	newItem->next = NULL;
         	newItem->down = NULL;
         }
-        if (line > 1 && column > 1){
+
+        if ( line > 1 && column > 1 ){
+
         	for ( int i = 1; i < column; i++ ){
         		tmpPtr = tmpHead;
         		tmpHead = tmpHead->next;
@@ -115,7 +97,7 @@ public:
        	}
     }
 
-    void removeRow( int row ){
+    void LinkedList::removeRow( int row ){
 
     	Node *tmpHead = head;
     	Node *tmpPtr = NULL;
@@ -183,7 +165,7 @@ public:
 		}
     }
 
-    void removeColumn( int column ){
+    void LinkedList::removeColumn( int column ){
 
         Node *tmpHead = head;
         Node *tmpPtr = NULL;
@@ -251,11 +233,11 @@ public:
         }
     }
 
-    void printList(){
+    void LinkedList::printList(){
 
         Node *tmpNode = head;
         Node *tmpHead = NULL;
-        while (tmpNode){
+        while ( tmpNode ){
         	tmpHead = tmpNode;
 
         	while( tmpHead ){
@@ -269,31 +251,27 @@ public:
         }
     }
 
-
-
-    void shuffle(Node *first, Node *second){
+    void LinkedList::shuffle( Node *first, Node *second ){
 
         Node *tmpFirst = first;
         Node *tmpSecond = second;
         Node *tmpPtr = NULL;
 
-        if (tmpFirst == NULL || tmpSecond == NULL){return;}
+        if ( tmpFirst == NULL || tmpSecond == NULL ){return;}
 
-
-
-        while (tmpFirst->prev){
+        while ( tmpFirst->prev ){
             tmpFirst = tmpFirst->prev;
         }
 
-        while (tmpSecond->prev){
+        while ( tmpSecond->prev ){
             tmpSecond = tmpSecond->prev;
         }
 
-        if(tmpSecond->up == NULL){
+        if( tmpSecond->up == NULL ){
             head = tmpFirst;
         }
 
-        while(tmpFirst){
+        while( tmpFirst ){
             tmpPtr = tmpSecond->down;
             tmpSecond->down = tmpFirst->down;
             tmpFirst->down = tmpPtr;
@@ -305,11 +283,11 @@ public:
             tmpFirst->down->up = tmpFirst;
             tmpSecond->up->down = tmpSecond;
 
-            if(tmpFirst->up != NULL){
+            if( tmpFirst->up != NULL ){
                 tmpFirst->up->down = tmpFirst;
             }
 
-            if(tmpSecond->down != NULL){
+            if( tmpSecond->down != NULL ){
                 tmpSecond->down->up = tmpSecond;
             }
 
@@ -317,14 +295,9 @@ public:
             tmpSecond = tmpSecond->next;
 
         }
-
     }
 
-
-
-
-
-    float mDet( LinkedList matrix){
+    float LinkedList::mDet( LinkedList matrix ){
 
         LinkedList *tmpMatrix = new LinkedList( matrix );
 
@@ -333,17 +306,13 @@ public:
         Node *tmpLine = NULL;
         Node *tmpPtr = NULL;
         Node *tmpRow = NULL;
-        int sign = 1;
 
         while( tmpHead->next ){
 
             tmpLine = tmpHead->down;
        
             while( tmpLine->down ){
-               /* if (tmpHead->value = 0){
-                    shuffle();
-                    sign *= -1;
-                }*/
+
                 tmpCoef = tmpLine->value / tmpHead->value;
                 tmpPtr = tmpHead;
                 tmpRow = tmpLine;
@@ -383,11 +352,10 @@ public:
         }
 
         tmpDet *= tmpHead->value;
-        //tmpDet *= sign;
         return tmpDet;
     }
 
-    float addition(LinkedList matrix, int row, int column){
+    float LinkedList::addition( LinkedList matrix, int row, int column ){
 
         LinkedList *mad = new LinkedList(matrix);
 
@@ -401,7 +369,7 @@ public:
         return tmpDet;
     }
 
-    void mSum(LinkedList matrix1, LinkedList matrix2){
+    void LinkedList::mSum( LinkedList matrix1, LinkedList matrix2 ){
        // std::cout << matrix1.head->value;
 
         Node *tmpFirstHead = matrix1.head;
@@ -413,16 +381,16 @@ public:
         int column = 1;
         int tmpValue = 0;
 
-        while (tmpFirstHead){
+        while ( tmpFirstHead ){
 
             tmpFirst = tmpFirstHead;
             tmpSecond = tmpSecondHead;
 
-            while(tmpFirst){
+            while( tmpFirst ){
 
                 tmpValue = tmpFirst->value + tmpSecond->value;
 
-                addItem(tmpValue, row, column);
+                addItem( tmpValue, row, column );
 
                 tmpFirst = tmpFirst->next;
                 tmpSecond = tmpSecond->next;
@@ -437,8 +405,7 @@ public:
         }
     }
 
-
-    void mMult(LinkedList matrix1, LinkedList matrix2){
+    void LinkedList::mMult( LinkedList matrix1, LinkedList matrix2 ){
 
         Node *tmpFirstHead = NULL;
         Node *tmpSecondHead = NULL;
@@ -449,16 +416,20 @@ public:
         float tmpValue = 0.0;
         int row = 1;
         int column = 1;
-        while(tmpFirst){
-            while(tmpSecond){
+
+        while( tmpFirst ){
+
+            while( tmpSecond ){
 
                 tmpFirstHead = tmpFirst;
                 tmpSecondHead = tmpSecond;
-                while(tmpSecondHead && tmpFirstHead){
+
+                while( tmpSecondHead && tmpFirstHead ){
                     tmpValue += tmpFirstHead->value * tmpSecondHead->value;
                     tmpFirstHead = tmpFirstHead->next;
                     tmpSecondHead = tmpSecondHead->down;
                 }
+
                 addItem(tmpValue, row, column);
                 tmpValue = 0;
 
@@ -477,7 +448,7 @@ public:
         }
     }  
 
-    void transposition(){
+    void LinkedList::transposition(){
         //LinkedList * trMatrix = new LinkedList();
 
         Node *tmpNode = NULL;
@@ -485,11 +456,13 @@ public:
 
         int row = 1;
         int column = 1;
-        while (tmpHead){
+
+        while ( tmpHead ){
             tmpNode = tmpHead;
+
             while( tmpNode ){
                 float tmpValue = tmpNode->value;
-                addItem(tmpValue, row, column);
+                addItem( tmpValue, row, column );
                 tmpNode = tmpNode->down;
                 column++;
                 
@@ -501,19 +474,19 @@ public:
         }
     }
 
-    void mRev(LinkedList matrix){
+    void LinkedList::mRev( LinkedList matrix ){
         Node *tmpHead = matrix.head;
         Node *tmpColumn = NULL;
         float mainDet = mDet(matrix);
         int row = 1;
         int column = 1;
 
-        while (tmpHead){
+        while ( tmpHead ){
             tmpColumn = tmpHead;
 
-            while(tmpColumn){
+            while( tmpColumn ){
 
-                addItem(addition(matrix, row, column), row, column);
+                addItem( addition( matrix, row, column ), row, column );
                 column++;
                 tmpColumn = tmpColumn->next;
             }
@@ -525,93 +498,14 @@ public:
         transposition();
         tmpHead = head;
         tmpColumn = NULL;
-        while (tmpHead){
+
+        while ( tmpHead ){
             tmpColumn = tmpHead;
 
-            while(tmpColumn){
+            while( tmpColumn ){
                 tmpColumn->value = tmpColumn->value / mainDet;
                 tmpColumn = tmpColumn->next;
             }
             tmpHead = tmpHead->down;
         }
-
     }
-
-};
-
-int main(){
-
-    LinkedList *matrix1 = new LinkedList();
-    
-    matrix1->addItem(1, 1, 1);
-    matrix1->addItem(2, 1, 2);
-    matrix1->addItem(3, 1, 3);
-    matrix1->addItem(4, 1, 4);
-    matrix1->addItem(5, 1, 5);
-
-    matrix1->addItem(1, 2, 1);
-    matrix1->addItem(4, 2, 2);
-    matrix1->addItem(8, 2, 3);
-    matrix1->addItem(8, 2, 4);
-    matrix1->addItem(7, 2, 5);
-
-    matrix1->addItem(2, 3, 1);
-    matrix1->addItem(2, 3, 2);
-    matrix1->addItem(8, 3, 3);
-    matrix1->addItem(3, 3, 4);
-    matrix1->addItem(4, 3, 5);
-
-    matrix1->addItem(2, 4, 1);
-    matrix1->addItem(2, 4, 2);
-    matrix1->addItem(1, 4, 3);
-    matrix1->addItem(5, 4, 4);
-    matrix1->addItem(7, 4, 5);
-
-    matrix1->addItem(1, 5, 1);
-    matrix1->addItem(2, 5, 2);
-    matrix1->addItem(5, 5, 3);
-    matrix1->addItem(4, 5, 4);
-    matrix1->addItem(3, 5, 5);
-
-    LinkedList *matrix2= new LinkedList();
-
-    matrix2->addItem(1, 1, 1);
-    matrix2->addItem(0, 1, 2);
-    matrix2->addItem(0, 1, 3);
-    matrix2->addItem(0, 1, 4);
-    matrix2->addItem(0, 1, 5);
-
-    matrix2->addItem(0, 2, 1);
-    matrix2->addItem(1, 2, 2);
-    matrix2->addItem(0, 2, 3);
-    matrix2->addItem(0, 2, 4);
-    matrix2->addItem(0, 2, 5);
-
-    matrix2->addItem(0, 3, 1);
-    matrix2->addItem(0, 3, 2);
-    matrix2->addItem(1, 3, 3);
-    matrix2->addItem(0, 3, 4);
-    matrix2->addItem(0, 3, 5);
-
-    matrix2->addItem(0, 4, 1);
-    matrix2->addItem(0, 4, 2);
-    matrix2->addItem(0, 4, 3);
-    matrix2->addItem(1, 4, 4);
-    matrix2->addItem(0, 4, 5);
-
-    LinkedList *l = new LinkedList();
-    
-   // l->mRev(*matrix1);
-   // LinkedList *m = new LinkedList();
-   // m->mMult(*matrix1, *l);
-    //std::cout << l->mDet(*matrix1);
-
-
-    matrix1->printList();
-    std::cout << std::endl;
-    matrix1->printList();
-   // l->printList();
-
-
-    return 0;
-}
