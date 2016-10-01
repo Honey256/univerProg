@@ -259,6 +259,8 @@
 
         if ( tmpFirst == NULL || tmpSecond == NULL ){return;}
 
+
+
         while ( tmpFirst->prev ){
             tmpFirst = tmpFirst->prev;
         }
@@ -269,6 +271,23 @@
 
         if( tmpSecond->up == NULL ){
             head = tmpFirst;
+        }
+
+        if ( tmpFirst->up == tmpSecond ){
+            tmpPtr = tmpFirst->up;
+            tmpFirst->up = tmpSecond->up;
+            tmpSecond->up = tmpSecond->down;
+            tmpSecond->down = tmpFirst->down;
+            tmpFirst->down = tmpPtr;
+
+            if( tmpFirst->up != NULL ){
+                tmpFirst->up->down = tmpFirst;
+            }
+
+            if( tmpSecond->down != NULL ){
+                tmpSecond->down->up = tmpSecond;
+            }
+            return;
         }
 
         while( tmpFirst ){
@@ -295,6 +314,7 @@
             tmpSecond = tmpSecond->next;
 
         }
+
     }
 
     float LinkedList::mDet( LinkedList matrix ){
@@ -306,10 +326,28 @@
         Node *tmpLine = NULL;
         Node *tmpPtr = NULL;
         Node *tmpRow = NULL;
+        Node *temp = NULL;
+        int sign = 1;
 
         while( tmpHead->next ){
 
             tmpLine = tmpHead->down;
+            if( tmpHead->value == 0 && tmpHead->down ){
+
+                if ( tmpLine->value == 0 ){
+
+                    if( tmpLine->down ){
+                        tmpLine = tmpLine->down;
+                    } else {
+                        return 0;
+                    }
+                }
+                shuffle(tmpLine, tmpHead);
+
+                tmpHead = temp->next->down;
+                tmpLine = tmpHead->down;
+                sign *= -1;
+            }
        
             while( tmpLine->down ){
 
@@ -337,7 +375,7 @@
                 tmpPtr = tmpPtr->next;
                 tmpRow = tmpRow->next;
             }
-
+            temp = tmpHead;
             tmpHead = tmpHead->next->down;
         }
 
@@ -345,13 +383,16 @@
         tmpHead = tmpMatrix->head;
 
         while ( tmpHead->next ){
-
             tmpDet *= tmpHead->value;
             tmpHead = tmpHead->down->next;
 
         }
 
         tmpDet *= tmpHead->value;
+        if ( tmpDet != 0 ){
+            tmpDet *= sign;
+        }
+        
         return tmpDet;
     }
 

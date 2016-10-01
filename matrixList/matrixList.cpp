@@ -293,6 +293,29 @@ public:
             head = tmpFirst;
         }
 
+        if (tmpFirst->up == tmpSecond){
+            while(tmpFirst){
+                tmpPtr = tmpFirst->up;
+                tmpFirst->up = tmpSecond->up;
+                tmpSecond->up = tmpSecond->down;
+                tmpSecond->down = tmpFirst->down;
+                tmpFirst->down = tmpPtr;
+
+                if(tmpFirst->up != NULL){
+                    tmpFirst->up->down = tmpFirst;
+                }
+
+                if(tmpSecond->down != NULL){
+                   tmpSecond->down->up = tmpSecond;
+                }
+                tmpFirst = tmpFirst->next;
+                tmpSecond = tmpSecond->next;
+            }
+            return;
+
+            
+        }
+
         while(tmpFirst){
             tmpPtr = tmpSecond->down;
             tmpSecond->down = tmpFirst->down;
@@ -324,7 +347,8 @@ public:
 
 
 
-    float mDet( LinkedList matrix){
+
+    float mDet( LinkedList matrix ){
 
         LinkedList *tmpMatrix = new LinkedList( matrix );
 
@@ -333,17 +357,29 @@ public:
         Node *tmpLine = NULL;
         Node *tmpPtr = NULL;
         Node *tmpRow = NULL;
+        Node *temp = NULL;
         int sign = 1;
 
         while( tmpHead->next ){
 
             tmpLine = tmpHead->down;
+            if(tmpHead->value == 0 && tmpHead->down){
+                if (tmpLine->value == 0){
+                    if(tmpLine->down){
+                        tmpLine = tmpLine->down;
+                    } else {
+                        return 0;
+                    }
+                }
+                shuffle(tmpLine, tmpHead);
+                tmpHead = temp->next->down;
+                tmpLine = tmpHead->down;
+                //tmpMatrix->printList();
+                sign *= -1;
+            }
        
             while( tmpLine->down ){
-               /* if (tmpHead->value = 0){
-                    shuffle();
-                    sign *= -1;
-                }*/
+
                 tmpCoef = tmpLine->value / tmpHead->value;
                 tmpPtr = tmpHead;
                 tmpRow = tmpLine;
@@ -368,7 +404,7 @@ public:
                 tmpPtr = tmpPtr->next;
                 tmpRow = tmpRow->next;
             }
-
+            temp = tmpHead;
             tmpHead = tmpHead->next->down;
         }
 
@@ -376,14 +412,16 @@ public:
         tmpHead = tmpMatrix->head;
 
         while ( tmpHead->next ){
-
             tmpDet *= tmpHead->value;
             tmpHead = tmpHead->down->next;
 
         }
 
         tmpDet *= tmpHead->value;
-        //tmpDet *= sign;
+        if (tmpDet != 0){
+            tmpDet *= sign;
+        }
+        
         return tmpDet;
     }
 
@@ -446,7 +484,7 @@ public:
         Node *tmpFirst = matrix1.head;
         Node *tmpSecond = matrix2.head;
 
-        float tmpValue = 0.0;
+        float tmpValue = 0;
         int row = 1;
         int column = 1;
         while(tmpFirst){
@@ -552,7 +590,7 @@ int main(){
     matrix1->addItem(1, 2, 1);
     matrix1->addItem(4, 2, 2);
     matrix1->addItem(8, 2, 3);
-    matrix1->addItem(8, 2, 4);
+    matrix1->addItem(7, 2, 4);
     matrix1->addItem(7, 2, 5);
 
     matrix1->addItem(2, 3, 1);
@@ -599,17 +637,24 @@ int main(){
     matrix2->addItem(1, 4, 4);
     matrix2->addItem(0, 4, 5);
 
+    matrix2->addItem(0, 5, 1);
+    matrix2->addItem(0, 5, 2);
+    matrix2->addItem(0, 5, 3);
+    matrix2->addItem(0, 5, 4);
+    matrix2->addItem(1, 5, 5);
+
+
+
     LinkedList *l = new LinkedList();
     
-   // l->mRev(*matrix1);
-   // LinkedList *m = new LinkedList();
-   // m->mMult(*matrix1, *l);
     //std::cout << l->mDet(*matrix1);
+    l->mRev(*matrix1);
 
-
-    matrix1->printList();
-    std::cout << std::endl;
-    matrix1->printList();
+    LinkedList *m = new LinkedList();
+    m->mMult(*matrix1, *l);
+   // matrix1->printList();
+    //std::cout << l->mDet(*matrix1);
+    m->printList();
    // l->printList();
 
 

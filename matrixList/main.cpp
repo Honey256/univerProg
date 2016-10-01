@@ -14,7 +14,7 @@ int main(){
     matrix1->addItem( 1, 2, 1 );
     matrix1->addItem( 4, 2, 2 );
     matrix1->addItem( 8, 2, 3 );
-    matrix1->addItem( 8, 2, 4 );
+    matrix1->addItem( 7, 2, 4 );
     matrix1->addItem( 7, 2, 5 );
 
     matrix1->addItem( 2, 3, 1 );
