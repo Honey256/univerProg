@@ -814,3 +814,17 @@
             tmpHead = tmpHead->down;
         }
     }
+
+    float LinkedList::get( int row, int column ){
+
+        Node *tmpHead = head;
+
+        for ( int i = 1; i < row; i++ ){
+            tmpHead = tmpHead->down;
+        }
+
+        for ( int j = 1; j < column; j++ ){
+            tmpHead = tmpHead->next;
+        }
+        return tmpHead->value;
+    }

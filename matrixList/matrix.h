@@ -60,4 +60,6 @@ public:
 
     void mRev( LinkedList matrix );
 
+    float get( int row, int column );
+
 };

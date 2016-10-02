@@ -831,6 +831,20 @@ public:
         }
     }
 
+    float get( int row, int column ){
+
+        Node *tmpHead = head;
+
+        for ( int i = 1; i < row; i++ ){
+            tmpHead = tmpHead->down;
+        }
+
+        for ( int j = 1; j < column; j++ ){
+            tmpHead = tmpHead->next;
+        }
+        return tmpHead->value;
+    }
+
 };
 
 int main(){
@@ -910,7 +924,8 @@ int main(){
 
     revMatrix = matrix1 + newMatrix;
     revMatrix.printList();
-    
+    float a = matrix1.get( 3, 4);
+    std::cout << a;
 
     return 0;
 }
