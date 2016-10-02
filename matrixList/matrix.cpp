@@ -1,6 +1,11 @@
 #include "matrix.h"
 
 
+    LinkedList::LinkedList(){
+
+        this->head = NULL;
+    }
+
     LinkedList::LinkedList( const LinkedList& matrix ){
         
         int row = 1;
@@ -11,8 +16,8 @@
         Node *tmpPtr = NULL;
 
         while ( tmpHead ){
-
             tmpPtr = tmpHead;
+
             while( tmpPtr ){
 
                 addItem( tmpPtr->value, row, column );
@@ -28,7 +33,51 @@
         }
     }
 
+    LinkedList LinkedList::operator=( const LinkedList matrix ){
+        
+        int row = 1;
+        int column = 1;
+
+        Node *tmpHead = matrix.head;
+
+        Node *tmpPtr = NULL;
+
+        while ( tmpHead ){
+            tmpPtr = tmpHead;
+
+            while( tmpPtr ){
+
+                addItem( tmpPtr->value, row, column );
+
+                tmpPtr = tmpPtr->next;
+                column++;              
+            }
+
+            tmpHead = tmpHead->down;
+            row++;
+            column = 1;
+        }
+        return *this;
+    }
+
+    LinkedList::LinkedList( int row, int column ){
+
+        for ( int i = 1; i <= row; i++ ){
+
+            for ( int j = 1; j <= column; j++ ){
+
+                if ( i == j ){
+                    addItem( 1, i, j );
+
+                } else{
+                    addItem( 0, i, j );
+                }
+            }
+        }
+    }
+
     void LinkedList::addItem( float value, int line, int column ){
+
 		Node *newItem = new Node();
         newItem->value = value;
         Node *tmpHead = head;
@@ -251,49 +300,137 @@
         }
     }
 
-void LinkedList::shuffle(Node *first, Node *second){
+    bool LinkedList::sqrValid( LinkedList *matrix ){
+
+        Node *tmpHead = matrix->head;
+        int row = 0;
+        int column = 0;
+
+        while( tmpHead->down ){
+            row++;
+            tmpHead = tmpHead->down;
+        }
+
+        while( tmpHead->next ){
+            column++;
+            tmpHead = tmpHead->next;
+        }
+
+        if ( row == column ){
+            return 1;
+        } else{
+            return 0;
+        }   
+    }
+
+    bool LinkedList::multValid( LinkedList *matrix1, LinkedList *matrix2 ){
+
+        Node *tmpFirst = matrix1->head;
+        Node *tmpSecond = matrix2->head;
+
+        int column = 0;
+        int row = 0;
+
+        while( tmpFirst ){
+            column++;
+            tmpFirst = tmpFirst->next;
+        }
+
+        while( tmpSecond ){
+            row++;
+            tmpSecond = tmpSecond->down;    
+        }
+
+        if ( row == column ){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    bool LinkedList::sumValid( LinkedList *matrix1, LinkedList *matrix2 ){
+
+        Node *tmpFirst = matrix1->head;
+        Node *tmpSecond = matrix2->head;
+
+        int columnFirst = 0;
+        int rowFirst = 0;
+        int columnSecond = 0;
+        int rowSecond = 0;
+
+        while( tmpFirst ){
+            columnFirst++;
+            tmpFirst = tmpFirst->next;
+        }
+
+        while( tmpSecond ){
+            columnSecond++;
+            tmpSecond = tmpSecond->next;    
+        }
+
+        tmpFirst = matrix1->head;
+        tmpSecond = matrix2->head;
+
+        while( tmpFirst ){
+            rowFirst++;
+            tmpFirst = tmpFirst->down;
+        }
+
+        while( tmpSecond ){
+            rowSecond++;
+            tmpSecond = tmpSecond->down;    
+        }
+
+        if ( columnFirst == columnSecond && rowFirst == rowSecond ){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    void LinkedList::shuffle( Node *first, Node *second ){
 
         Node *tmpFirst = first;
         Node *tmpSecond = second;
         Node *tmpPtr = NULL;
 
-        if (tmpFirst == NULL || tmpSecond == NULL){return;}
+        if ( tmpFirst == NULL || tmpSecond == NULL ){return;}
 
 
 
-        while (tmpFirst->prev){
+        while ( tmpFirst->prev ){
             tmpFirst = tmpFirst->prev;
         }
 
-        while (tmpSecond->prev){
+        while ( tmpSecond->prev ){
             tmpSecond = tmpSecond->prev;
         }
 
-        if(tmpSecond->up == NULL){
+        if( tmpSecond->up == NULL ){
             head = tmpFirst;
         }
 
-        if (tmpFirst->up == tmpSecond){
-            while(tmpFirst){
+        if ( tmpFirst->up == tmpSecond ){
+
+            while( tmpFirst ){
                 tmpPtr = tmpFirst->up;
                 tmpFirst->up = tmpSecond->up;
                 tmpSecond->up = tmpSecond->down;
                 tmpSecond->down = tmpFirst->down;
                 tmpFirst->down = tmpPtr;
 
-                if(tmpFirst->up != NULL){
+                if( tmpFirst->up != NULL ){
                     tmpFirst->up->down = tmpFirst;
                 }
 
-                if(tmpSecond->down != NULL){
+                if( tmpSecond->down != NULL ){
                    tmpSecond->down->up = tmpSecond;
                 }
+
                 tmpFirst = tmpFirst->next;
                 tmpSecond = tmpSecond->next;
             }
             return;
-
-            
         }
 
         while(tmpFirst){
@@ -320,33 +457,37 @@ void LinkedList::shuffle(Node *first, Node *second){
             tmpSecond = tmpSecond->next;
 
         }
-
     }
 
     float LinkedList::mDet( LinkedList matrix ){
 
-        LinkedList *tmpMatrix = new LinkedList( matrix );
+        if ( sqrValid( &matrix ) == 0 ){return 0;}
 
+        LinkedList *tmpMatrix = new LinkedList( matrix );
+        
+        int sign = 1;
         float tmpCoef;
         Node *tmpHead = tmpMatrix->head;
         Node *tmpLine = NULL;
         Node *tmpPtr = NULL;
         Node *tmpRow = NULL;
         Node *temp = NULL;
-        int sign = 1;
 
         while( tmpHead->next ){
 
             tmpLine = tmpHead->down;
-            if(tmpHead->value == 0 && tmpHead->down){
-                if (tmpLine->value == 0){
-                    if(tmpLine->down){
+
+            if( tmpHead->value == 0 && tmpHead->down ){
+
+                if ( tmpLine->value == 0 ){
+
+                    if( tmpLine->down ){
                         tmpLine = tmpLine->down;
                     } else {
                         return 0;
                     }
                 }
-                shuffle(tmpLine, tmpHead);
+                shuffle( tmpLine, tmpHead );
                 tmpHead = temp->next->down;
                 tmpLine = tmpHead->down;
                 //tmpMatrix->printList();
@@ -393,7 +534,8 @@ void LinkedList::shuffle(Node *first, Node *second){
         }
 
         tmpDet *= tmpHead->value;
-        if (tmpDet != 0){
+
+        if ( tmpDet != 0 ){
             tmpDet *= sign;
         }
         
@@ -402,20 +544,118 @@ void LinkedList::shuffle(Node *first, Node *second){
 
     float LinkedList::addition( LinkedList matrix, int row, int column ){
 
+
+        if ( sqrValid( &matrix ) == 0 ){return 0;}
+
         LinkedList *mad = new LinkedList(matrix);
 
-        mad->removeRow(row);
-        mad->removeColumn(column);
-        float tmpDet = mDet(*mad);
+        mad->removeRow( row );
+        mad->removeColumn( column );
+        float tmpDet = mDet( *mad );
 
-        if ((row + column) % 2 != 0){
+        if ( ( row + column ) % 2 != 0 ){
             tmpDet *= -1;
         }
         return tmpDet;
     }
 
+    LinkedList LinkedList::operator+( LinkedList matrix2 ) const {
+
+
+        Node *tmpFirstHead = head;
+        Node *tmpSecondHead = matrix2.head;
+        LinkedList *newMatrix = new LinkedList();
+        Node *tmpFirst = NULL;
+        Node *tmpSecond= NULL;
+
+        int row = 1;
+        int column = 1;
+        int tmpValue = 0;
+
+        while ( tmpFirstHead ){
+
+             tmpFirst = tmpFirstHead;
+             tmpSecond = tmpSecondHead;
+
+             while( tmpFirst ){
+
+                 tmpValue = tmpFirst->value + tmpSecond->value;
+
+                 newMatrix->addItem( tmpValue, row, column );
+
+                 tmpFirst = tmpFirst->next;
+                 tmpSecond = tmpSecond->next;
+                 column++;              
+            }
+
+            tmpFirstHead = tmpFirstHead->down;
+            tmpSecondHead = tmpSecondHead->down;
+            row++;
+            column = 1;
+
+        }
+        return *newMatrix;
+    }
+
+    LinkedList LinkedList::operator*( LinkedList matrix2 ) const{
+
+        Node *tmpFirstHead = NULL;
+        Node *tmpSecondHead = NULL;
+
+        Node *tmpFirst = head;
+        Node *tmpSecond = matrix2.head;
+
+        LinkedList *newMatrix = new LinkedList();
+
+
+        float tmpValue = 0;
+        int row = 1;
+        int column = 1;
+
+        while( tmpFirst ){
+
+            while( tmpSecond ){
+
+                tmpFirstHead = tmpFirst;
+                tmpSecondHead = tmpSecond;
+
+                while( tmpSecondHead && tmpFirstHead ){
+                    tmpValue += tmpFirstHead->value * tmpSecondHead->value;
+                    tmpFirstHead = tmpFirstHead->next;
+                    tmpSecondHead = tmpSecondHead->down;
+                }
+
+                if ( tmpValue > 0.99 && tmpValue < 1 ){
+                    tmpValue = 1;
+                }
+
+                if ( tmpValue > -0.001 && tmpValue < 0.001 ) {
+                    tmpValue = 0;
+                }
+
+                newMatrix->addItem( tmpValue, row, column );
+                tmpValue = 0;
+
+
+                tmpSecond = tmpSecond->next;
+                column++;
+
+
+            }
+            tmpSecond = matrix2.head;
+            tmpFirst = tmpFirst->down;
+            row++; 
+            column = 1;
+        }
+        return *newMatrix;
+    }  
+
     void LinkedList::mSum( LinkedList matrix1, LinkedList matrix2 ){
-       // std::cout << matrix1.head->value;
+
+        if ( sumValid ( &matrix1, &matrix2 ) == 0){
+            std::cerr << "invalid matrix";
+            return;
+        }
 
         Node *tmpFirstHead = matrix1.head;
         Node *tmpSecondHead = matrix2.head;
@@ -452,6 +692,11 @@ void LinkedList::shuffle(Node *first, Node *second){
 
     void LinkedList::mMult( LinkedList matrix1, LinkedList matrix2 ){
 
+        if ( multValid( &matrix1, &matrix2 ) == 0 ){
+            std::cerr << "invalid matrix";
+            return;
+        }
+
         Node *tmpFirstHead = NULL;
         Node *tmpSecondHead = NULL;
 
@@ -475,14 +720,15 @@ void LinkedList::shuffle(Node *first, Node *second){
                     tmpSecondHead = tmpSecondHead->down;
                 }
 
-                if (tmpValue > 0.99 && tmpValue < 1){
+                if ( tmpValue > 0.99 && tmpValue < 1 ){
                     tmpValue = 1;
                 }
-                if (tmpValue > -0.001 && tmpValue < 0.001) {
+
+                if ( tmpValue > -0.001 && tmpValue < 0.001 ) {
                     tmpValue = 0;
                 }
 
-                addItem(tmpValue, row, column);
+                addItem( tmpValue, row, column );
                 tmpValue = 0;
 
 
@@ -527,6 +773,13 @@ void LinkedList::shuffle(Node *first, Node *second){
     }
 
     void LinkedList::mRev( LinkedList matrix ){
+
+        if ( sqrValid( &matrix ) == 0 ){
+            std::cerr << "invalude matrix";
+            return;
+        }
+
+
         Node *tmpHead = matrix.head;
         Node *tmpColumn = NULL;
         float mainDet = mDet(matrix);
