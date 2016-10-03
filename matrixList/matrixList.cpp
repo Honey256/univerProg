@@ -163,6 +163,135 @@ public:
         }
     }
 
+    void changeItem( float value, int row, int column ){
+
+        Node *tmpHead = head;
+
+        for ( int i = 1; i < row; i++ ){
+            tmpHead = tmpHead->down;
+        }
+
+        for ( int i = 1; i < column; i++ ){
+            tmpHead = tmpHead->next;
+        }
+
+        tmpHead->value = value;
+    }
+ 
+    void insertItemR( float value, int row, int column ){
+
+        Node *newItem = new Node();
+        newItem->value = value;
+        Node *tmpHead = head;
+           
+
+
+        if( row == 1 && column > 1){
+            tmpHead = head->down;
+        } else{
+
+            for ( int i = 2; i < row; i++){
+                tmpHead = tmpHead->down;
+            }
+        }
+
+        for ( int j = 1; j < column; j++ ){
+            tmpHead = tmpHead->next;
+        }
+
+
+        if ( row == 1 ){
+            tmpHead->up = newItem;
+            newItem->down = tmpHead;
+            newItem->up = NULL;
+
+            if ( column == 1 ){
+                head = newItem;
+                newItem->prev = NULL;
+            }
+
+            if ( column > 1 ){
+                newItem->prev = tmpHead->prev->up;
+                newItem->prev->next = newItem;
+            }
+        }
+
+        if ( row > 1 ){
+            newItem->up = tmpHead;
+            newItem->down = tmpHead->down;
+
+            if( column == 1 ){
+                newItem->prev = NULL;
+            }
+            tmpHead->down = newItem;
+
+            if( newItem->down ){
+                newItem->down->up = newItem;            
+            }
+
+            if( column > 1 ){
+                newItem->prev = newItem->up->prev->down;
+                newItem->prev->next = newItem;
+            }
+        }
+        newItem->next = NULL;    
+    }
+
+    void insertItemC( float value, int row, int column ){
+
+        Node *newItem = new Node();
+        newItem->value = value;
+        Node *tmpHead = head;
+
+        if( column == 1 && row > 1){
+            tmpHead = head->next;
+        } else{
+
+            for ( int i = 2; i < column; i++ ){
+                tmpHead = tmpHead->next;
+            }
+        }
+
+        for ( int j = 1; j < row; j++ ){
+            tmpHead = tmpHead->down;
+        }
+
+        if ( column == 1 ){
+            tmpHead->prev = newItem;
+            newItem->next = tmpHead;
+            newItem->prev = NULL;
+
+            if ( row == 1 ){
+                head = newItem;
+                newItem->up = NULL;
+            }
+
+            if ( row > 1 ){
+                newItem->up = tmpHead->up->prev;
+                newItem->up->down = newItem;
+            }
+        }
+
+        if ( column > 1 ){
+            newItem->prev = tmpHead;
+            newItem->next = tmpHead->next;
+
+            if( row == 1 ){
+                newItem->up = NULL;
+            }
+            tmpHead->next = newItem;
+            if( newItem->next ){
+                newItem->next->prev = newItem;            
+            }
+
+            if( row > 1 ){
+                newItem->up = newItem->prev->up->next;
+                newItem->up->down = newItem;
+            }
+        }
+        newItem->down = NULL;     
+    }
+
     void addRow( std::string str ){
 
         float item = 0;
@@ -273,6 +402,87 @@ public:
         }
     }
 
+    void addRow( std::string str, int row ){
+
+        float item = 0;
+        int len = str.length();
+        int column = 1;
+        int end = len / 2 + 1;
+        int index = 1;
+        int amt = 0;
+        Node *tmpHead = head;
+        std::string newColumn;
+
+        while( tmpHead->next ){
+            index++;
+            tmpHead = tmpHead->next;
+        }
+
+        int lenIndex = index * 2 - 1;
+        tmpHead = head;
+
+        while( tmpHead->down ){
+            newColumn += "0;";
+            tmpHead = tmpHead->down;
+        }
+        newColumn += "0;0";
+
+
+        if ( len < lenIndex ){
+            len = lenIndex;
+        }
+
+        for( int i = 0; i <= len; i++ ){
+
+            if ( amt >= index && amt < end ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    if ( str[i-1] > 47 && str[i-1] < 58 ){
+                        item = item * 10 + str[i] - 48;
+                    }
+
+                    if ( str[i-1] < 48 || str[i-1] > 57 ){
+                        addColumn(newColumn);
+                        item = str[i] - 48;
+                    }
+
+                    if ( str[i+1] < 48 || str[i+1] > 57 ){
+                        changeItem( item, row, column );
+                        amt++;
+                        column++;
+                    }
+                }
+            }
+
+            if( amt < index && amt >= end ){
+                insertItemR( 0, row, column );
+                amt++;
+                column++;
+                i++;
+            }
+
+            if ( amt < index && amt < end ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+
+                    if ( str[i-1] > 47 && str[i-1] < 58 ){
+                        item = item * 10 + str[i] - 48;
+                    }
+
+                    if ( str[i-1] < 48 || str[i-1] > 57 ){
+                        item = str[i] - 48;
+                    }
+
+                    if ( str[i+1] < 48 || str[i+1] > 57 ){
+                        insertItemR( item, row, column );
+                        amt++;
+                        column++;
+                    }
+                }
+            }
+        }
+    }
+
     void addColumn( std::string str ){
 
         float item = 0;
@@ -376,6 +586,87 @@ public:
 
                     if ( str[i+1] < 48 || str[i+1] > 57 ){
                         addItem( item, row, column );
+                        amt++;
+                        row++;
+                    }
+                }      
+            } 
+        }
+    }
+
+    void addColumn( std::string str, int column ){
+
+        float item = 0;
+        int len = str.length();
+        int row = 1;
+        int end = len / 2 + 1;
+        int index = 1;
+        int amt = 0;
+        Node *tmpHead = head;
+        std::string newRow;
+
+        while( tmpHead->down ){
+            index++;
+            tmpHead = tmpHead->down;
+        }
+
+        int lenIndex = index * 2 - 1;
+        tmpHead = head;
+
+        while( tmpHead->next ){
+            newRow += "0;";
+            tmpHead = tmpHead->next;
+        }
+        newRow += "0;0";
+
+        if ( len < lenIndex ){
+            len = lenIndex;
+        }
+
+        for( int i = 0; i <= len; i++ ){
+
+            if ( amt >= index && amt < end ){
+                    
+                if ( str[i] > 47 && str[i] < 58 ){
+
+                    if ( str[i-1] > 47 && str[i-1] < 58 ){
+                        item = item * 10 + str[i] - 48;
+                    }
+
+                    if ( str[i-1] < 48 || str[i-1] > 57 ){
+                        addRow(newRow);
+                        item = str[i] - 48;
+                    }
+
+                    if ( str[i+1] < 48 || str[i+1] > 57 ){
+                        changeItem( item, row, column );
+                        amt++;
+                        row++;
+                    }
+                }
+            }
+
+            if( amt < index && amt >= end ){
+                insertItemC( 0, row, column );
+                amt++;
+                row++;
+                i++;
+            }
+
+            if (amt < index && amt < end ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+
+                    if (str[i-1] > 47 && str[i-1] < 58){
+                        item = item * 10 + str[i] - 48;
+                    }
+
+                    if ( str[i-1] < 48 || str[i-1] > 57 ){
+                        item = str[i] - 48;
+                    }
+
+                    if ( str[i+1] < 48 || str[i+1] > 57 ){
+                        insertItemC( item, row, column );
                         amt++;
                         row++;
                     }
@@ -526,7 +817,6 @@ public:
         Node *tmpHead = NULL;
         while ( tmpNode ){
             tmpHead = tmpNode;
-
             while( tmpHead ){
             std::cout << tmpHead->value << " ";
             tmpHead = tmpHead->next;        
@@ -1080,11 +1370,12 @@ int main(){
 
     matrix1.addRow("1;4;8;7;7");
 
-    matrix1.addRow("2;2;8;3;4");
+    matrix1.addRow("2;2;8;3;4", 3);
 
     matrix1.addRow("2;2;1;5;7");
 
     matrix1.addRow("1;2;5;4;3");
+
 
     matrix1.printList();
 
@@ -1092,18 +1383,19 @@ int main(){
 
 
 
-
     LinkedList matrix2;
 
-    matrix2.addColumn("1;2;3;4;5");
+    matrix2.addColumn("1;1;2;2;1");
 
     matrix2.addColumn("2;4;2;2;2");
 
-    matrix2.addColumn("3;8;8;1;5");
+    matrix2.addColumn("3;8;8;1;5", 3);
 
     matrix2.addColumn("4;7;3;5;4");
 
     matrix2.addColumn("5;7;4;7;3");  
+
+
 
     matrix2.printList();
 
@@ -1143,7 +1435,8 @@ int main(){
     matrix3.addItem( 4, 5, 4 );
     matrix3.addItem( 3, 5, 5 );
 
-    matrix3.printList();
+    //matrix3.printList();
+
 
     
     /*LinkedList revMatrix;

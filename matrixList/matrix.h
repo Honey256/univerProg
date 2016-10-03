@@ -30,9 +30,19 @@ public:
     
     void addItem( float value, int line, int column );
 
+    void changeItem( float value, int row, int column );
+
+    void insertItemR( float value, int row, int column );
+
+    void insertItemC( float value, int row, int column );
+
     void addRow( std::string str );
 
+    void addRow( std::string str, int row );
+
     void addColumn( std::string str );
+
+    void addColumn( std::string str, int column );
 
     void removeRow( int row );
 
