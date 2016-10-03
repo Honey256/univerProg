@@ -163,6 +163,164 @@ public:
         }
     }
 
+    void addRow( std::string str ){
+
+        float item = 0;
+        int len = str.length();
+        int row = 1;
+        int column = 1;
+
+        if( head == NULL ){
+            
+            for ( int i = 0; i <= len; i++ ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    item = str[i] - 48;
+                    addItem( item, row, column );
+                    column++;
+                }
+
+            }
+            return;
+        }
+
+        int end = len / 2 + 1;
+        int index = 1;
+        int amt = 0;
+        row = 2;
+        Node *tmpHead = head;
+        std::string newColumn;
+
+        while( tmpHead->next ){
+            index++;
+            tmpHead = tmpHead->next;
+        }
+
+        int lenIndex = index * 2 - 1;
+        tmpHead = head;
+
+        while( tmpHead->down ){
+            row++;
+            newColumn += "0;";
+            tmpHead = tmpHead->down;
+        }
+        newColumn += "0;0";
+
+        if ( len < lenIndex ){
+            len = lenIndex;
+        }
+
+        for( int i = 0; i <= len; i++ ){
+
+            if ( amt >= index && amt < end ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    addColumn(newColumn);
+                    item = str[i] - 48;
+                    addItem( item, row, column );
+                    amt++;
+                    column++;        
+                    }
+                }
+
+            if( amt < index && amt >= end ){
+                addItem( 0, row, column );
+                amt++;
+                column++;
+                i++;
+            }
+
+            if ( amt < index && amt < end ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    item = str[i] - 48;
+                    addItem( item, row, column );
+                    amt++;
+                    column++;
+
+                }  
+            }             
+        }
+    }
+
+    void addColumn( std::string str ){
+
+        float item = 0;
+        int len = str.length();
+        int row = 1;
+        int column = 1;
+
+        if( head == NULL ){
+            
+            for ( int i = 0; i <= len; i++ ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    item = str[i] - 48;
+                    addItem( item, row, column );
+                    row++;
+                }
+            }
+            return;
+        }
+
+        int end = len / 2 + 1;
+        int index = 1;
+        int amt = 0;
+        column = 2;
+        Node *tmpHead = head;
+        std::string newRow;
+
+        while( tmpHead->down ){
+            index++;
+            tmpHead = tmpHead->down;
+        }
+
+        int lenIndex = index * 2 - 1;
+        tmpHead = head;
+
+        while( tmpHead->next ){
+            column++;
+            newRow += "0;";
+            tmpHead = tmpHead->next;
+        }
+        newRow += "0;0";
+
+        if ( len < lenIndex ){
+            len = lenIndex;
+        }
+
+        for( int i = 0; i <= len; i++ ){
+
+            if ( amt >= index && amt < end ){
+                    
+                    if ( str[i] > 47 && str[i] < 58 ){
+                        addRow( newRow );
+                        item = str[i] - 48;
+                        addItem( item, row, column );
+                        amt++;
+                        row++;    
+                    }
+            }
+
+            if( amt < index && amt >= end ){
+                addItem( 0, row, column );
+                amt++;
+                row++;
+                i++;
+            }
+
+            if (amt < index && amt < end ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    item = str[i] - 48;
+                    addItem( item, row, column );
+                    amt++;
+                    row++;
+                }       
+            } 
+        }
+    }
+
     void removeRow( int row ){
 
         Node *tmpHead = head;
@@ -555,6 +713,8 @@ public:
         if ( tmpDet != 0 ){
             tmpDet *= sign;
         }
+
+        delete tmpMatrix;
         
         return tmpDet;
     }
@@ -573,6 +733,8 @@ public:
         if ( ( row + column ) % 2 != 0 ){
             tmpDet *= -1;
         }
+
+        delete mad;
         return tmpDet;
     }
 
@@ -849,83 +1011,91 @@ public:
 
 int main(){
 
-
     LinkedList matrix1;
-    
-    matrix1.addItem( 1, 1, 1 );
-    matrix1.addItem( 2, 1, 2 );
-    matrix1.addItem( 3, 1, 3 );
-    matrix1.addItem( 4, 1, 4 );
-    matrix1.addItem( 5, 1, 5 );
 
-    matrix1.addItem( 1, 2, 1 );
-    matrix1.addItem( 4, 2, 2 );
-    matrix1.addItem( 8, 2, 3 );
-    matrix1.addItem( 7, 2, 4 );
-    matrix1.addItem( 7, 2, 5 );
+    matrix1.addRow("1;2;3;4;5");
 
-    matrix1.addItem( 2, 3, 1 );
-    matrix1.addItem( 2, 3, 2 );
-    matrix1.addItem( 8, 3, 3 );
-    matrix1.addItem( 3, 3, 4 );
-    matrix1.addItem( 4, 3, 5 );
+    matrix1.addRow("1;4;8;7;7");
 
-    matrix1.addItem( 2, 4, 1 );
-    matrix1.addItem( 2, 4, 2 );
-    matrix1.addItem( 1, 4, 3 );
-    matrix1.addItem( 5, 4, 4 );
-    matrix1.addItem( 7, 4, 5 );
+    matrix1.addRow("2;2;8;3;4");
 
-    matrix1.addItem( 1, 5, 1 );
-    matrix1.addItem( 2, 5, 2 );
-    matrix1.addItem( 5, 5, 3 );
-    matrix1.addItem( 4, 5, 4 );
-    matrix1.addItem( 3, 5, 5 );
+    matrix1.addRow("2;2;1;5;7");
+
+    matrix1.addRow("1;2;5;4;3");
+
+    matrix1.printList();
+
+    std::cout << std::endl;
+
+
 
 
     LinkedList matrix2;
+
+    matrix2.addColumn("1;1;2;2;1");
+
+    matrix2.addColumn("2;4;2;2;2");
+
+    matrix2.addColumn("3;8;8;1;5");
+
+    matrix2.addColumn("4;7;3;5;4");
+
+    matrix2.addColumn("5;7;4;7;3");  
+
+    matrix2.printList();
+
+    std::cout << std::endl;
+
+
+
+    LinkedList matrix3;
     
-    matrix2.addItem( 1, 1, 1 );
-    matrix2.addItem( 2, 1, 2 );
-    matrix2.addItem( 3, 1, 3 );
-    matrix2.addItem( 4, 1, 4 );
-    matrix2.addItem( 5, 1, 5 );
+    matrix3.addItem( 1, 1, 1 );
+    matrix3.addItem( 2, 1, 2 );
+    matrix3.addItem( 3, 1, 3 );
+    matrix3.addItem( 4, 1, 4 );
+    matrix3.addItem( 5, 1, 5 );
 
-    matrix2.addItem( 1, 2, 1 );
-    matrix2.addItem( 4, 2, 2 );
-    matrix2.addItem( 8, 2, 3 );
-    matrix2.addItem( 7, 2, 4 );
-    matrix2.addItem( 7, 2, 5 );
+    matrix3.addItem( 1, 2, 1 );
+    matrix3.addItem( 4, 2, 2 );
+    matrix3.addItem( 8, 2, 3 );
+    matrix3.addItem( 7, 2, 4 );
+    matrix3.addItem( 7, 2, 5 );
 
-    matrix2.addItem( 2, 3, 1 );
-    matrix2.addItem( 2, 3, 2 );
-    matrix2.addItem( 8, 3, 3 );
-    matrix2.addItem( 3, 3, 4 );
-    matrix2.addItem( 4, 3, 5 );
+    matrix3.addItem( 2, 3, 1 );
+    matrix3.addItem( 2, 3, 2 );
+    matrix3.addItem( 8, 3, 3 );
+    matrix3.addItem( 3, 3, 4 );
+    matrix3.addItem( 4, 3, 5 );
 
-    matrix2.addItem( 2, 4, 1 );
-    matrix2.addItem( 2, 4, 2 );
-    matrix2.addItem( 1, 4, 3 );
-    matrix2.addItem( 5, 4, 4 );
-    matrix2.addItem( 7, 4, 5 );
+    matrix3.addItem( 2, 4, 1 );
+    matrix3.addItem( 2, 4, 2 );
+    matrix3.addItem( 1, 4, 3 );
+    matrix3.addItem( 5, 4, 4 );
+    matrix3.addItem( 7, 4, 5 );
 
-    matrix2.addItem( 1, 5, 1 );
-    matrix2.addItem( 2, 5, 2 );
-    matrix2.addItem( 5, 5, 3 );
-    matrix2.addItem( 4, 5, 4 );
-    matrix2.addItem( 3, 5, 5 );
+    matrix3.addItem( 1, 5, 1 );
+    matrix3.addItem( 2, 5, 2 );
+    matrix3.addItem( 5, 5, 3 );
+    matrix3.addItem( 4, 5, 4 );
+    matrix3.addItem( 3, 5, 5 );
+
+    matrix3.printList();
 
     
-    LinkedList revMatrix;
+    /*LinkedList revMatrix;
     LinkedList newMatrix;
     revMatrix.mRev(matrix1);
     newMatrix = matrix1 * revMatrix;
     newMatrix.printList();
 
+
     revMatrix = matrix1 + newMatrix;
     revMatrix.printList();
     float a = matrix1.get( 3, 4);
-    std::cout << a;
+    std::cout << a;*/
+    //matrix1.addRow("1;2;3;4;5;6");
+    //matrix1.addColumn("1;2;3;4;5;6;7");
 
     return 0;
 }

@@ -146,6 +146,164 @@
        	}
     }
 
+    void LinkedList::addRow( std::string str ){
+
+        float item = 0;
+        int len = str.length();
+        int row = 1;
+        int column = 1;
+
+        if( head == NULL ){
+            
+            for ( int i = 0; i <= len; i++ ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    item = str[i] - 48;
+                    addItem( item, row, column );
+                    column++;
+                }
+
+            }
+            return;
+        }
+
+        int end = len / 2 + 1;
+        int index = 1;
+        int amt = 0;
+        row = 2;
+        Node *tmpHead = head;
+        std::string newColumn;
+
+        while( tmpHead->next ){
+            index++;
+            tmpHead = tmpHead->next;
+        }
+
+        int lenIndex = index * 2 - 1;
+        tmpHead = head;
+
+        while( tmpHead->down ){
+            row++;
+            newColumn += "0;";
+            tmpHead = tmpHead->down;
+        }
+        newColumn += "0;0";
+
+        if ( len < lenIndex ){
+            len = lenIndex;
+        }
+
+        for( int i = 0; i <= len; i++ ){
+
+            if ( amt >= index && amt < end ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    addColumn(newColumn);
+                    item = str[i] - 48;
+                    addItem( item, row, column );
+                    amt++;
+                    column++;        
+                    }
+                }
+
+            if( amt < index && amt >= end ){
+                addItem( 0, row, column );
+                amt++;
+                column++;
+                i++;
+            }
+
+            if ( amt < index && amt < end ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    item = str[i] - 48;
+                    addItem( item, row, column );
+                    amt++;
+                    column++;
+
+                }  
+            }             
+        }
+    }
+
+    void LinkedList::addColumn( std::string str ){
+
+        float item = 0;
+        int len = str.length();
+        int row = 1;
+        int column = 1;
+
+        if( head == NULL ){
+            
+            for ( int i = 0; i <= len; i++ ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    item = str[i] - 48;
+                    addItem( item, row, column );
+                    row++;
+                }
+            }
+            return;
+        }
+
+        int end = len / 2 + 1;
+        int index = 1;
+        int amt = 0;
+        column = 2;
+        Node *tmpHead = head;
+        std::string newRow;
+
+        while( tmpHead->down ){
+            index++;
+            tmpHead = tmpHead->down;
+        }
+
+        int lenIndex = index * 2 - 1;
+        tmpHead = head;
+
+        while( tmpHead->next ){
+            column++;
+            newRow += "0;";
+            tmpHead = tmpHead->next;
+        }
+        newRow += "0;0";
+
+        if ( len < lenIndex ){
+            len = lenIndex;
+        }
+
+        for( int i = 0; i <= len; i++ ){
+
+            if ( amt >= index && amt < end ){
+                    
+                    if ( str[i] > 47 && str[i] < 58 ){
+                        addRow( newRow );
+                        item = str[i] - 48;
+                        addItem( item, row, column );
+                        amt++;
+                        row++;    
+                    }
+            }
+
+            if( amt < index && amt >= end ){
+                addItem( 0, row, column );
+                amt++;
+                row++;
+                i++;
+            }
+
+            if (amt < index && amt < end ){
+
+                if ( str[i] > 47 && str[i] < 58 ){
+                    item = str[i] - 48;
+                    addItem( item, row, column );
+                    amt++;
+                    row++;
+                }       
+            } 
+        }
+    }
+
     void LinkedList::removeRow( int row ){
 
     	Node *tmpHead = head;

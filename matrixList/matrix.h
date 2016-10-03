@@ -30,6 +30,10 @@ public:
     
     void addItem( float value, int line, int column );
 
+    void addRow( std::string str );
+
+    void addColumn( std::string str );
+
     void removeRow( int row );
 
     void removeColumn( int column );
