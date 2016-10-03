@@ -1,4 +1,4 @@
-//library
+//matrixLibrary
 
 #include "matrix.h"
 

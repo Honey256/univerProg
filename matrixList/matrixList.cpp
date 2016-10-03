@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string.h>
-//library
+//matrixLibrary
 
 class LinkedList{
 
