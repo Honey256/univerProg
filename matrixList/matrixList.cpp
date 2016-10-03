@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string.h>
-
+//library
 
 class LinkedList{
 
@@ -365,7 +365,7 @@ public:
             if (amt < index && amt < end ){
 
                 if ( str[i] > 47 && str[i] < 58 ){
-                    
+
                     if (str[i-1] > 47 && str[i-1] < 58){
                         item = item * 10 + str[i] - 48;
                     }
