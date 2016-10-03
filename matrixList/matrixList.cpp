@@ -175,9 +175,21 @@ public:
             for ( int i = 0; i <= len; i++ ){
 
                 if ( str[i] > 47 && str[i] < 58 ){
-                    item = str[i] - 48;
-                    addItem( item, row, column );
-                    column++;
+
+                    if ( str[i-1] > 47 && str[i-1] < 58 ){
+                        item = item * 10 + str[i] - 48;
+                    }
+
+                    if ( str[i-1] < 48 || str[i-1] > 57 ){
+                        item = str[i] - 48;
+                    }
+
+                    if ( str[i+1] < 48 || str[i+1] > 57 ){
+                        addItem( item, row, column );
+                        column++;
+                    }
+                    
+                    
                 }
 
             }
@@ -215,13 +227,22 @@ public:
             if ( amt >= index && amt < end ){
 
                 if ( str[i] > 47 && str[i] < 58 ){
-                    addColumn(newColumn);
-                    item = str[i] - 48;
-                    addItem( item, row, column );
-                    amt++;
-                    column++;        
+                    if ( str[i-1] > 47 && str[i-1] < 58 ){
+                        item = item * 10 + str[i] - 48;
+                    }
+
+                    if ( str[i-1] < 48 || str[i-1] > 57 ){
+                        addColumn(newColumn);
+                        item = str[i] - 48;
+                    }
+
+                    if ( str[i+1] < 48 || str[i+1] > 57 ){
+                        addItem( item, row, column );
+                        amt++;
+                        column++;
                     }
                 }
+            }
 
             if( amt < index && amt >= end ){
                 addItem( 0, row, column );
@@ -233,12 +254,21 @@ public:
             if ( amt < index && amt < end ){
 
                 if ( str[i] > 47 && str[i] < 58 ){
-                    item = str[i] - 48;
-                    addItem( item, row, column );
-                    amt++;
-                    column++;
 
-                }  
+                    if ( str[i-1] > 47 && str[i-1] < 58 ){
+                        item = item * 10 + str[i] - 48;
+                    }
+
+                    if ( str[i-1] < 48 || str[i-1] > 57 ){
+                        item = str[i] - 48;
+                    }
+
+                    if ( str[i+1] < 48 || str[i+1] > 57 ){
+                        addItem( item, row, column );
+                        amt++;
+                        column++;
+                    }
+                } 
             }             
         }
     }
@@ -255,10 +285,23 @@ public:
             for ( int i = 0; i <= len; i++ ){
 
                 if ( str[i] > 47 && str[i] < 58 ){
-                    item = str[i] - 48;
-                    addItem( item, row, column );
-                    row++;
+
+                    if ( str[i-1] > 47 && str[i-1] < 58 ){
+                        item = item * 10 + str[i] - 48;
+                    }
+
+                    if ( str[i-1] < 48 || str[i-1] > 57 ){
+                        item = str[i] - 48;
+                    }
+
+                    if ( str[i+1] < 48 || str[i+1] > 57 ){
+                        addItem( item, row, column );
+                        row++;
+                    }
+                    
+                    
                 }
+
             }
             return;
         }
@@ -293,13 +336,23 @@ public:
 
             if ( amt >= index && amt < end ){
                     
-                    if ( str[i] > 47 && str[i] < 58 ){
-                        addRow( newRow );
+                if ( str[i] > 47 && str[i] < 58 ){
+
+                    if ( str[i-1] > 47 && str[i-1] < 58 ){
+                        item = item * 10 + str[i] - 48;
+                    }
+
+                    if ( str[i-1] < 48 || str[i-1] > 57 ){
+                        addRow(newRow);
                         item = str[i] - 48;
+                    }
+
+                    if ( str[i+1] < 48 || str[i+1] > 57 ){
                         addItem( item, row, column );
                         amt++;
-                        row++;    
+                        row++;
                     }
+                }
             }
 
             if( amt < index && amt >= end ){
@@ -312,11 +365,21 @@ public:
             if (amt < index && amt < end ){
 
                 if ( str[i] > 47 && str[i] < 58 ){
-                    item = str[i] - 48;
-                    addItem( item, row, column );
-                    amt++;
-                    row++;
-                }       
+                    
+                    if (str[i-1] > 47 && str[i-1] < 58){
+                        item = item * 10 + str[i] - 48;
+                    }
+
+                    if ( str[i-1] < 48 || str[i-1] > 57 ){
+                        item = str[i] - 48;
+                    }
+
+                    if ( str[i+1] < 48 || str[i+1] > 57 ){
+                        addItem( item, row, column );
+                        amt++;
+                        row++;
+                    }
+                }      
             } 
         }
     }
@@ -1032,7 +1095,7 @@ int main(){
 
     LinkedList matrix2;
 
-    matrix2.addColumn("1;1;2;2;1");
+    matrix2.addColumn("1;2;3;4;5");
 
     matrix2.addColumn("2;4;2;2;2");
 
