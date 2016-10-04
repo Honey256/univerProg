@@ -76,4 +76,6 @@ public:
 
     float get( int row, int column );
 
+    int rank();
+
 };

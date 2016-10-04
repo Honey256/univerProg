@@ -74,20 +74,5 @@ int main(){
 
     matrix3.printList();
 
-    
-    /*LinkedList revMatrix;
-    LinkedList newMatrix;
-    revMatrix.mRev(matrix1);
-    newMatrix = matrix1 * revMatrix;
-    newMatrix.printList();
-
-
-    revMatrix = matrix1 + newMatrix;
-    revMatrix.printList();
-    float a = matrix1.get( 3, 4);
-    std::cout << a;*/
-    //matrix1.addRow("1;2;3;4;5;6");
-    //matrix1.addColumn("1;2;3;4;5;6;7");
-
     return 0;
 }

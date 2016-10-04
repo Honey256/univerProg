@@ -1342,3 +1342,59 @@
         }
         return tmpHead->value;
     }
+
+    int LinkedList::rank(){
+
+        int rank = 0;
+        int row = 1;
+        int column = 1;
+        int size = 0;
+        float det;
+        Node *tmpHead = head;
+
+        while ( tmpHead->next ){
+            column++;
+            tmpHead = tmpHead->next;
+        }
+        
+        while ( tmpHead->down ){
+            row++;
+            tmpHead = tmpHead->down;
+        }
+
+
+        LinkedList *newMatrix = new LinkedList(*this);
+
+        size = row;
+
+        if ( row > column ){
+
+            for ( int i = column + 1; i <= row; i++ ){
+                removeRow( i );
+            }
+            size = column;
+            row = size;
+        }
+
+        if ( row < column ){
+
+            for ( int i = row + 1; i <= column; i++ ){
+                removeColumn(i);
+            }
+            size = row;
+            column = size;
+        }
+
+        while( det == 0 && size > 0 ){
+            det = mDet( *newMatrix );
+
+            if ( det > 0 ){
+                return size;
+            }
+
+            removeColumn( size );
+            removeRow( size );
+            size--;
+        }
+        return size;
+    }
