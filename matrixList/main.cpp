@@ -3,7 +3,7 @@
 
 int main(){
 
-    LinkedList matrix1;
+    MatrixList matrix1;
 
     matrix1.addRow("1;2;3;4;5");
 
@@ -22,7 +22,7 @@ int main(){
 
 
 
-    LinkedList matrix2;
+    MatrixList matrix2;
 
     matrix2.addColumn("1;1;2;2;1");
 
@@ -40,7 +40,7 @@ int main(){
 
 
 
-    LinkedList matrix3;
+    MatrixList matrix3;
     
     matrix3.addItem( 1, 1, 1 );
     matrix3.addItem( 2, 1, 2 );

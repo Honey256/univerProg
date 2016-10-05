@@ -2,7 +2,7 @@
 #include <string.h>
 
 
-class LinkedList{
+class MatrixList{
 
 public:
     struct Node{
@@ -18,15 +18,15 @@ private:
 
 public:
 
-    LinkedList();
+    MatrixList();
 
-    LinkedList( const LinkedList& matrix );
+    MatrixList( const MatrixList& matrix );
 
-    LinkedList operator=(const LinkedList matrix);
+    MatrixList operator=(const MatrixList matrix);
 
-    LinkedList( int row, int column );
+    MatrixList( int row, int column );
 
-    ~LinkedList(){}
+    ~MatrixList(){}
     
     void addItem( float value, int line, int column );
 
@@ -50,31 +50,33 @@ public:
 
     void printList();
 
-    bool sqrValid( LinkedList *matrix );
+    bool sqrValid( MatrixList *matrix );
 
-    bool multValid( LinkedList *matrix1, LinkedList *matrix2 );
+    bool multValid( MatrixList *matrix1, MatrixList *matrix2 );
 
-    bool sumValid( LinkedList *matrix1, LinkedList *matrix2 );
+    bool sumValid( MatrixList *matrix1, MatrixList *matrix2 );
 
-    void shuffle( Node *first, Node *second );
+    void swap( Node *first, Node *second );
 
-    float mDet( LinkedList matrix );
+    float determinant( MatrixList matrix );
 
-    float addition( LinkedList matrix, int row, int column );
+    float addition( MatrixList matrix, int row, int column );
 
-    LinkedList operator+( LinkedList matrix2 ) const;
+    MatrixList operator+( MatrixList matrix2 ) const;
 
-    LinkedList operator*( LinkedList matrix2 ) const;
+    MatrixList operator*( MatrixList matrix2 ) const;
 
-    void mSum( LinkedList matrix1, LinkedList matrix2 );
+    void matrixSum( MatrixList matrix1, MatrixList matrix2 );
     
-    void mMult( LinkedList matrix1, LinkedList matrix2 );
+    void matrixMult( MatrixList matrix1, MatrixList matrix2 );
 
     void transposition();
 
-    void mRev( LinkedList matrix );
+    void matrixRev( MatrixList matrix );
 
     float get( int row, int column );
+    
+    void find( float value );
 
     int rank();
 

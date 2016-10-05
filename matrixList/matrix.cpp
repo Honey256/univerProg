@@ -3,12 +3,12 @@
 #include "matrix.h"
 
 
-    LinkedList::LinkedList(){
+    MatrixList::MatrixList(){
 
         this->head = NULL;
     }
 
-    LinkedList::LinkedList( const LinkedList& matrix ){
+    MatrixList::MatrixList( const MatrixList& matrix ){
         
         int row = 1;
         int column = 1;
@@ -35,7 +35,7 @@
         }
     }
 
-    LinkedList LinkedList::operator=( const LinkedList matrix ){
+    MatrixList MatrixList::operator=( const MatrixList matrix ){
         
         int row = 1;
         int column = 1;
@@ -62,7 +62,7 @@
         return *this;
     }
 
-    LinkedList::LinkedList( int row, int column ){
+    MatrixList::MatrixList( int row, int column ){
 
         for ( int i = 1; i <= row; i++ ){
 
@@ -78,7 +78,7 @@
         }
     }
 
-    void LinkedList::addItem( float value, int line, int column ){
+    void MatrixList::addItem( float value, int line, int column ){
 
 		Node *newItem = new Node();
         newItem->value = value;
@@ -148,7 +148,7 @@
        	}
     }
 
-    void LinkedList::changeItem( float value, int row, int column ){
+    void MatrixList::changeItem( float value, int row, int column ){
 
         Node *tmpHead = head;
 
@@ -163,7 +163,7 @@
         tmpHead->value = value;
     }
  
-    void LinkedList::insertItemR( float value, int row, int column ){
+    void MatrixList::insertItemR( float value, int row, int column ){
 
         Node *newItem = new Node();
         newItem->value = value;
@@ -222,7 +222,7 @@
         newItem->next = NULL;    
     }
 
-    void LinkedList::insertItemC( float value, int row, int column ){
+    void MatrixList::insertItemC( float value, int row, int column ){
 
         Node *newItem = new Node();
         newItem->value = value;
@@ -277,7 +277,7 @@
         newItem->down = NULL;     
     }
 
-    void LinkedList::addRow( std::string str ){
+    void MatrixList::addRow( std::string str ){
 
         float item = 0;
         int len = str.length();
@@ -387,7 +387,7 @@
         }
     }
 
-    void LinkedList::addRow( std::string str, int row ){
+    void MatrixList::addRow( std::string str, int row ){
 
         float item = 0;
         int len = str.length();
@@ -468,7 +468,7 @@
         }
     }
 
-    void LinkedList::addColumn( std::string str ){
+    void MatrixList::addColumn( std::string str ){
 
         float item = 0;
         int len = str.length();
@@ -579,7 +579,7 @@
         }
     }
 
-    void LinkedList::addColumn( std::string str, int column ){
+    void MatrixList::addColumn( std::string str, int column ){
 
         float item = 0;
         int len = str.length();
@@ -660,7 +660,7 @@
         }
     }
 
-    void LinkedList::removeRow( int row ){
+    void MatrixList::removeRow( int row ){
 
     	Node *tmpHead = head;
     	Node *tmpPtr = NULL;
@@ -728,7 +728,7 @@
 		}
     }
 
-    void LinkedList::removeColumn( int column ){
+    void MatrixList::removeColumn( int column ){
 
         Node *tmpHead = head;
         Node *tmpPtr = NULL;
@@ -796,7 +796,7 @@
         }
     }
 
-    void LinkedList::printList(){
+    void MatrixList::printList(){
 
         Node *tmpNode = head;
         Node *tmpHead = NULL;
@@ -814,7 +814,7 @@
         }
     }
 
-    bool LinkedList::sqrValid( LinkedList *matrix ){
+    bool MatrixList::sqrValid( MatrixList *matrix ){
 
         Node *tmpHead = matrix->head;
         int row = 0;
@@ -837,7 +837,7 @@
         }   
     }
 
-    bool LinkedList::multValid( LinkedList *matrix1, LinkedList *matrix2 ){
+    bool MatrixList::multValid( MatrixList *matrix1, MatrixList *matrix2 ){
 
         Node *tmpFirst = matrix1->head;
         Node *tmpSecond = matrix2->head;
@@ -862,7 +862,7 @@
         }
     }
 
-    bool LinkedList::sumValid( LinkedList *matrix1, LinkedList *matrix2 ){
+    bool MatrixList::sumValid( MatrixList *matrix1, MatrixList *matrix2 ){
 
         Node *tmpFirst = matrix1->head;
         Node *tmpSecond = matrix2->head;
@@ -902,7 +902,7 @@
         }
     }
 
-    void LinkedList::shuffle( Node *first, Node *second ){
+    void MatrixList::swap( Node *first, Node *second ){
 
         Node *tmpFirst = first;
         Node *tmpSecond = second;
@@ -973,11 +973,11 @@
         }
     }
 
-    float LinkedList::mDet( LinkedList matrix ){
+    float MatrixList::determinant( MatrixList matrix ){
 
         if ( sqrValid( &matrix ) == 0 ){return 0;}
 
-        LinkedList *tmpMatrix = new LinkedList( matrix );
+        MatrixList *tmpMatrix = new MatrixList( matrix );
         
         int sign = 1;
         float tmpCoef;
@@ -1001,7 +1001,7 @@
                         return 0;
                     }
                 }
-                shuffle( tmpLine, tmpHead );
+                swap( tmpLine, tmpHead );
                 tmpHead = temp->next->down;
                 tmpLine = tmpHead->down;
                 //tmpMatrix->printList();
@@ -1056,16 +1056,16 @@
         return tmpDet;
     }
 
-    float LinkedList::addition( LinkedList matrix, int row, int column ){
+    float MatrixList::addition( MatrixList matrix, int row, int column ){
 
 
         if ( sqrValid( &matrix ) == 0 ){return 0;}
 
-        LinkedList *mad = new LinkedList(matrix);
+        MatrixList *mad = new MatrixList(matrix);
 
         mad->removeRow( row );
         mad->removeColumn( column );
-        float tmpDet = mDet( *mad );
+        float tmpDet = determinant( *mad );
 
         if ( ( row + column ) % 2 != 0 ){
             tmpDet *= -1;
@@ -1073,12 +1073,12 @@
         return tmpDet;
     }
 
-    LinkedList LinkedList::operator+( LinkedList matrix2 ) const {
+    MatrixList MatrixList::operator+( MatrixList matrix2 ) const {
 
 
         Node *tmpFirstHead = head;
         Node *tmpSecondHead = matrix2.head;
-        LinkedList *newMatrix = new LinkedList();
+        MatrixList *newMatrix = new MatrixList();
         Node *tmpFirst = NULL;
         Node *tmpSecond= NULL;
 
@@ -1111,7 +1111,7 @@
         return *newMatrix;
     }
 
-    LinkedList LinkedList::operator*( LinkedList matrix2 ) const{
+    MatrixList MatrixList::operator*( MatrixList matrix2 ) const{
 
         Node *tmpFirstHead = NULL;
         Node *tmpSecondHead = NULL;
@@ -1119,7 +1119,7 @@
         Node *tmpFirst = head;
         Node *tmpSecond = matrix2.head;
 
-        LinkedList *newMatrix = new LinkedList();
+        MatrixList *newMatrix = new MatrixList();
 
 
         float tmpValue = 0;
@@ -1164,7 +1164,7 @@
         return *newMatrix;
     }  
 
-    void LinkedList::mSum( LinkedList matrix1, LinkedList matrix2 ){
+    void MatrixList::matrixSum( MatrixList matrix1, MatrixList matrix2 ){
 
         if ( sumValid ( &matrix1, &matrix2 ) == 0){
             std::cerr << "invalid matrix";
@@ -1204,7 +1204,7 @@
         }
     }
 
-    void LinkedList::mMult( LinkedList matrix1, LinkedList matrix2 ){
+    void MatrixList::matrixMult( MatrixList matrix1, MatrixList matrix2 ){
 
         if ( multValid( &matrix1, &matrix2 ) == 0 ){
             std::cerr << "invalid matrix";
@@ -1260,8 +1260,8 @@
         }
     }  
 
-    void LinkedList::transposition(){
-        //LinkedList * trMatrix = new LinkedList();
+    void MatrixList::transposition(){
+        //MatrixList * trMatrix = new MatrixList();
 
         Node *tmpNode = NULL;
         Node *tmpHead = head;
@@ -1286,7 +1286,7 @@
         }
     }
 
-    void LinkedList::mRev( LinkedList matrix ){
+    void MatrixList::matrixRev( MatrixList matrix ){
 
         if ( sqrValid( &matrix ) == 0 ){
             std::cerr << "invalude matrix";
@@ -1296,7 +1296,7 @@
 
         Node *tmpHead = matrix.head;
         Node *tmpColumn = NULL;
-        float mainDet = mDet(matrix);
+        float mainDet = determinant(matrix);
         int row = 1;
         int column = 1;
 
@@ -1329,7 +1329,7 @@
         }
     }
 
-    float LinkedList::get( int row, int column ){
+    float MatrixList::get( int row, int column ){
 
         Node *tmpHead = head;
 
@@ -1343,9 +1343,33 @@
         return tmpHead->value;
     }
 
-    int LinkedList::rank(){
+    void MatrixList::find( float value ){
 
-        int rank = 0;
+        Node *tmpHead = head;
+        Node *tmpNode = head;
+        float delta = 0.0001;
+        int row = 1;
+        int column = 1;
+
+        while ( tmpHead ){
+            tmpNode = tmpHead;
+
+            while ( tmpNode ){
+
+                if ( ( value - tmpNode->value ) < delta && ( value - tmpNode->value > -delta ) ){
+                    std::cout << " ( "<< row << " | " << column << " ) " << std::endl;
+                }
+                column++;
+                tmpNode = tmpNode -> next;
+            }
+            column = 1;
+            row++;
+            tmpHead = tmpHead->down;
+        }
+    }
+
+    int MatrixList::rank(){
+
         int row = 1;
         int column = 1;
         int size = 0;
@@ -1363,7 +1387,7 @@
         }
 
 
-        LinkedList *newMatrix = new LinkedList(*this);
+        MatrixList *newMatrix = new MatrixList(*this);
 
         size = row;
 
@@ -1386,7 +1410,7 @@
         }
 
         while( det == 0 && size > 0 ){
-            det = mDet( *newMatrix );
+            det = determinant( *newMatrix );
 
             if ( det > 0 ){
                 return size;
