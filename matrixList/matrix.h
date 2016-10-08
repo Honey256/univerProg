@@ -14,7 +14,18 @@ public:
     };
 
 private:
+    
     Node *head;
+
+    void insertItemR( float value, int row, int column );
+
+    void insertItemC( float value, int row, int column );
+
+    bool sqrValid( MatrixList *matrix );
+
+    bool multValid( MatrixList *matrix1, MatrixList *matrix2 );
+
+    bool sumValid( MatrixList *matrix1, MatrixList *matrix2 );
 
 public:
 
@@ -26,15 +37,11 @@ public:
 
     MatrixList( int row, int column );
 
-    ~MatrixList(){}
+    ~MatrixList();
     
     void addItem( float value, int line, int column );
 
     void changeItem( float value, int row, int column );
-
-    void insertItemR( float value, int row, int column );
-
-    void insertItemC( float value, int row, int column );
 
     void addRow( std::string str );
 
@@ -49,12 +56,6 @@ public:
     void removeColumn( int column );
 
     void printList();
-
-    bool sqrValid( MatrixList *matrix );
-
-    bool multValid( MatrixList *matrix1, MatrixList *matrix2 );
-
-    bool sumValid( MatrixList *matrix1, MatrixList *matrix2 );
 
     void swap( Node *first, Node *second );
 

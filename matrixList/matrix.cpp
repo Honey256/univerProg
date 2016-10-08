@@ -3,166 +3,6 @@
 #include "matrix.h"
 
 
-    MatrixList::MatrixList(){
-
-        this->head = NULL;
-    }
-
-    MatrixList::MatrixList( const MatrixList& matrix ){
-        
-        int row = 1;
-        int column = 1;
-
-        Node *tmpHead = matrix.head;
-
-        Node *tmpPtr = NULL;
-
-        while ( tmpHead ){
-            tmpPtr = tmpHead;
-
-            while( tmpPtr ){
-
-                addItem( tmpPtr->value, row, column );
-
-                tmpPtr = tmpPtr->next;
-                column++;              
-            }
-
-            tmpHead = tmpHead->down;
-            row++;
-            column = 1;
-
-        }
-    }
-
-    MatrixList MatrixList::operator=( const MatrixList matrix ){
-        
-        int row = 1;
-        int column = 1;
-
-        Node *tmpHead = matrix.head;
-
-        Node *tmpPtr = NULL;
-
-        while ( tmpHead ){
-            tmpPtr = tmpHead;
-
-            while( tmpPtr ){
-
-                addItem( tmpPtr->value, row, column );
-
-                tmpPtr = tmpPtr->next;
-                column++;              
-            }
-
-            tmpHead = tmpHead->down;
-            row++;
-            column = 1;
-        }
-        return *this;
-    }
-
-    MatrixList::MatrixList( int row, int column ){
-
-        for ( int i = 1; i <= row; i++ ){
-
-            for ( int j = 1; j <= column; j++ ){
-
-                if ( i == j ){
-                    addItem( 1, i, j );
-
-                } else{
-                    addItem( 0, i, j );
-                }
-            }
-        }
-    }
-
-    void MatrixList::addItem( float value, int line, int column ){
-
-		Node *newItem = new Node();
-        newItem->value = value;
-        Node *tmpHead = head;
-        Node *tmpPtr = NULL;
-
-        if ( line == 1 && column == 1 ){
-
-        	head = newItem;
-        	newItem->next = NULL;
-        	newItem->prev = NULL;
-        	newItem->up = NULL;
-        	newItem->down = NULL;
-
-
-        }
-
-        if ( line == 1 && column > 1 ){
-
-      		while( tmpHead->next ){
-            	tmpHead = tmpHead->next;
-        	}
-
-        	tmpHead->next = newItem;
-        	newItem->prev = tmpHead;
-        	newItem->up = NULL;
-        	newItem->down = NULL;
-        	newItem->next = NULL;
-        }
-
-        if ( line > 1 && column == 1 ){
-
-        	for ( int i = 1; i < line; i++ ){
-        		tmpPtr = tmpHead;
-        		tmpHead = tmpHead->down;
-        	}
-
-        	tmpPtr->down = newItem;
-        	newItem->up = tmpPtr;
-        	newItem->prev = NULL;
-        	newItem->next = NULL;
-        	newItem->down = NULL;
-        }
-
-        if ( line > 1 && column > 1 ){
-
-        	for ( int i = 1; i < column; i++ ){
-        		tmpPtr = tmpHead;
-        		tmpHead = tmpHead->next;
-        	}
-
-        	for ( int i = 1; i < line; i++ ){
-        		tmpPtr = tmpHead;
-        		tmpHead = tmpHead->down;
-       		}
-
-       		tmpPtr->down = newItem;
-       		newItem->up = tmpPtr;
-
-       		tmpHead = tmpPtr->prev;
-       		tmpHead = tmpHead->down;
-
-       		tmpHead->next = newItem;
-       		newItem->prev = tmpHead;
-       		newItem->next = NULL;
-       		newItem->down = NULL;
-       	}
-    }
-
-    void MatrixList::changeItem( float value, int row, int column ){
-
-        Node *tmpHead = head;
-
-        for ( int i = 1; i < row; i++ ){
-            tmpHead = tmpHead->down;
-        }
-
-        for ( int i = 1; i < column; i++ ){
-            tmpHead = tmpHead->next;
-        }
-
-        tmpHead->value = value;
-    }
- 
     void MatrixList::insertItemR( float value, int row, int column ){
 
         Node *newItem = new Node();
@@ -275,6 +115,259 @@
             }
         }
         newItem->down = NULL;     
+    }    
+
+    bool MatrixList::sqrValid( MatrixList *matrix ){
+
+        Node *tmpHead = matrix->head;
+        int row = 0;
+        int column = 0;
+
+        while( tmpHead->down ){
+            row++;
+            tmpHead = tmpHead->down;
+        }
+
+        while( tmpHead->next ){
+            column++;
+            tmpHead = tmpHead->next;
+        }
+
+        if ( row == column ){
+            return 1;
+        } else{
+            return 0;
+        }   
+    }
+
+    bool MatrixList::multValid( MatrixList *matrix1, MatrixList *matrix2 ){
+
+        Node *tmpFirst = matrix1->head;
+        Node *tmpSecond = matrix2->head;
+
+        int column = 0;
+        int row = 0;
+
+        while( tmpFirst ){
+            column++;
+            tmpFirst = tmpFirst->next;
+        }
+
+        while( tmpSecond ){
+            row++;
+            tmpSecond = tmpSecond->down;    
+        }
+
+        if ( row == column ){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    bool MatrixList::sumValid( MatrixList *matrix1, MatrixList *matrix2 ){
+
+        Node *tmpFirst = matrix1->head;
+        Node *tmpSecond = matrix2->head;
+
+        int columnFirst = 0;
+        int rowFirst = 0;
+        int columnSecond = 0;
+        int rowSecond = 0;
+
+        while( tmpFirst ){
+            columnFirst++;
+            tmpFirst = tmpFirst->next;
+        }
+
+        while( tmpSecond ){
+            columnSecond++;
+            tmpSecond = tmpSecond->next;    
+        }
+
+        tmpFirst = matrix1->head;
+        tmpSecond = matrix2->head;
+
+        while( tmpFirst ){
+            rowFirst++;
+            tmpFirst = tmpFirst->down;
+        }
+
+        while( tmpSecond ){
+            rowSecond++;
+            tmpSecond = tmpSecond->down;    
+        }
+
+        if ( columnFirst == columnSecond && rowFirst == rowSecond ){
+            return 1;
+        }else{
+            return 0;
+        }
+    }
+
+    MatrixList::MatrixList(){
+
+        this->head = NULL;
+    }
+
+    MatrixList::MatrixList( const MatrixList& matrix ){
+        
+        int row = 1;
+        int column = 1;
+
+        Node *tmpHead = matrix.head;
+
+        Node *tmpPtr = NULL;
+
+        while ( tmpHead ){
+            tmpPtr = tmpHead;
+
+            while( tmpPtr ){
+
+                addItem( tmpPtr->value, row, column );
+
+                tmpPtr = tmpPtr->next;
+                column++;              
+            }
+
+            tmpHead = tmpHead->down;
+            row++;
+            column = 1;
+
+        }
+    }
+
+    MatrixList MatrixList::operator=( const MatrixList matrix ){
+        
+        int row = 1;
+        int column = 1;
+
+        Node *tmpHead = matrix.head;
+
+        Node *tmpPtr = NULL;
+
+        while ( tmpHead ){
+            tmpPtr = tmpHead;
+
+            while( tmpPtr ){
+
+                addItem( tmpPtr->value, row, column );
+
+                tmpPtr = tmpPtr->next;
+                column++;              
+            }
+
+            tmpHead = tmpHead->down;
+            row++;
+            column = 1;
+        }
+        return *this;
+    }
+
+    MatrixList::MatrixList( int row, int column ){
+
+        for ( int i = 1; i <= row; i++ ){
+
+            for ( int j = 1; j <= column; j++ ){
+
+                if ( i == j ){
+                    addItem( 1, i, j );
+
+                } else{
+                    addItem( 0, i, j );
+                }
+            }
+        }
+    }
+
+    MatrixList::~MatrixList(){
+
+        //std::cout << "~MatrixList";
+    }
+
+    void MatrixList::addItem( float value, int line, int column ){
+
+		Node *newItem = new Node();
+        newItem->value = value;
+        Node *tmpHead = head;
+        Node *tmpPtr = NULL;
+
+        if ( line == 1 && column == 1 ){
+
+        	head = newItem;
+        	newItem->next = NULL;
+        	newItem->prev = NULL;
+        	newItem->up = NULL;
+        	newItem->down = NULL;
+
+
+        }
+
+        if ( line == 1 && column > 1 ){
+
+      		while( tmpHead->next ){
+            	tmpHead = tmpHead->next;
+        	}
+
+        	tmpHead->next = newItem;
+        	newItem->prev = tmpHead;
+        	newItem->up = NULL;
+        	newItem->down = NULL;
+        	newItem->next = NULL;
+        }
+
+        if ( line > 1 && column == 1 ){
+
+        	for ( int i = 1; i < line; i++ ){
+        		tmpPtr = tmpHead;
+        		tmpHead = tmpHead->down;
+        	}
+
+        	tmpPtr->down = newItem;
+        	newItem->up = tmpPtr;
+        	newItem->prev = NULL;
+        	newItem->next = NULL;
+        	newItem->down = NULL;
+        }
+
+        if ( line > 1 && column > 1 ){
+
+        	for ( int i = 1; i < column; i++ ){
+        		tmpPtr = tmpHead;
+        		tmpHead = tmpHead->next;
+        	}
+
+        	for ( int i = 1; i < line; i++ ){
+        		tmpPtr = tmpHead;
+        		tmpHead = tmpHead->down;
+       		}
+
+       		tmpPtr->down = newItem;
+       		newItem->up = tmpPtr;
+
+       		tmpHead = tmpPtr->prev;
+       		tmpHead = tmpHead->down;
+
+       		tmpHead->next = newItem;
+       		newItem->prev = tmpHead;
+       		newItem->next = NULL;
+       		newItem->down = NULL;
+       	}
+    }
+
+    void MatrixList::changeItem( float value, int row, int column ){
+
+        Node *tmpHead = head;
+
+        for ( int i = 1; i < row; i++ ){
+            tmpHead = tmpHead->down;
+        }
+
+        for ( int i = 1; i < column; i++ ){
+            tmpHead = tmpHead->next;
+        }
+
+        tmpHead->value = value;
     }
 
     void MatrixList::addRow( std::string str ){
@@ -811,94 +904,6 @@
         	std::cout << std::endl;
         	tmpNode = tmpNode->down;
 
-        }
-    }
-
-    bool MatrixList::sqrValid( MatrixList *matrix ){
-
-        Node *tmpHead = matrix->head;
-        int row = 0;
-        int column = 0;
-
-        while( tmpHead->down ){
-            row++;
-            tmpHead = tmpHead->down;
-        }
-
-        while( tmpHead->next ){
-            column++;
-            tmpHead = tmpHead->next;
-        }
-
-        if ( row == column ){
-            return 1;
-        } else{
-            return 0;
-        }   
-    }
-
-    bool MatrixList::multValid( MatrixList *matrix1, MatrixList *matrix2 ){
-
-        Node *tmpFirst = matrix1->head;
-        Node *tmpSecond = matrix2->head;
-
-        int column = 0;
-        int row = 0;
-
-        while( tmpFirst ){
-            column++;
-            tmpFirst = tmpFirst->next;
-        }
-
-        while( tmpSecond ){
-            row++;
-            tmpSecond = tmpSecond->down;    
-        }
-
-        if ( row == column ){
-            return 1;
-        }else{
-            return 0;
-        }
-    }
-
-    bool MatrixList::sumValid( MatrixList *matrix1, MatrixList *matrix2 ){
-
-        Node *tmpFirst = matrix1->head;
-        Node *tmpSecond = matrix2->head;
-
-        int columnFirst = 0;
-        int rowFirst = 0;
-        int columnSecond = 0;
-        int rowSecond = 0;
-
-        while( tmpFirst ){
-            columnFirst++;
-            tmpFirst = tmpFirst->next;
-        }
-
-        while( tmpSecond ){
-            columnSecond++;
-            tmpSecond = tmpSecond->next;    
-        }
-
-        tmpFirst = matrix1->head;
-        tmpSecond = matrix2->head;
-
-        while( tmpFirst ){
-            rowFirst++;
-            tmpFirst = tmpFirst->down;
-        }
-
-        while( tmpSecond ){
-            rowSecond++;
-            tmpSecond = tmpSecond->down;    
-        }
-
-        if ( columnFirst == columnSecond && rowFirst == rowSecond ){
-            return 1;
-        }else{
-            return 0;
         }
     }
 
