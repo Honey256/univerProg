@@ -37,7 +37,7 @@ public:
 
     MatrixList( int row, int column );
 
-    ~MatrixList();
+   ~MatrixList();
     
     void addItem( float value, int line, int column );
 

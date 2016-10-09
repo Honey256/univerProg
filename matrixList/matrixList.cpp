@@ -1098,7 +1098,7 @@ public:
     MatrixList operator+( MatrixList matrix2 ) const {
 
 
-        Node *tmpFirstHead = head;
+        Node *tmpFirstHead = this->head;
         Node *tmpSecondHead = matrix2.head;
         MatrixList *newMatrix = new MatrixList();
         Node *tmpFirst = NULL;
@@ -1130,7 +1130,9 @@ public:
             column = 1;
 
         }
-        return *newMatrix;
+        MatrixList n = *newMatrix;
+        delete newMatrix;
+        return n;
     }
 
     MatrixList operator*( MatrixList matrix2 ) const{
@@ -1521,7 +1523,6 @@ int main(){
     matrix3.addItem( 3, 5, 5 );
 
     matrix3.printList();
-
 
     return 0;
 }

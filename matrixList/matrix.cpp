@@ -2,7 +2,7 @@
 
 #include "matrix.h"
 
-
+    /* @javadoc */
     void MatrixList::insertItemR( float value, int row, int column ){
 
         Node *newItem = new Node();
@@ -281,8 +281,37 @@
     }
 
     MatrixList::~MatrixList(){
+        Node *tmpHead = this->head;
+        Node *tmpPtr = NULL;
 
-        //std::cout << "~MatrixList";
+        while ( tmpHead->down ){
+            tmpPtr = tmpHead->next;
+
+            while( tmpPtr->next ){
+                tmpPtr = tmpPtr->next;
+                delete tmpPtr->prev;
+            }
+
+            delete tmpPtr;
+            tmpHead = tmpHead->down;
+        }
+
+        tmpPtr = tmpHead->next;
+
+        while( tmpPtr->next ){
+            tmpPtr = tmpPtr->next;
+            delete tmpPtr->prev;
+        }
+
+        delete tmpPtr;
+
+        tmpHead = head;
+
+        while( tmpHead->down){
+            tmpHead = tmpHead->down;
+            delete tmpHead->up;
+        }
+        delete tmpHead;
     }
 
     void MatrixList::addItem( float value, int line, int column ){
@@ -1057,7 +1086,9 @@
         if ( tmpDet != 0 ){
             tmpDet *= sign;
         }
-        
+        delete tmpMatrix;
+
+
         return tmpDet;
     }
 
@@ -1075,6 +1106,8 @@
         if ( ( row + column ) % 2 != 0 ){
             tmpDet *= -1;
         }
+
+        delete mad;
         return tmpDet;
     }
 
@@ -1113,7 +1146,9 @@
             column = 1;
 
         }
-        return *newMatrix;
+        MatrixList tmpMatrix = *newMatrix;
+        delete newMatrix;
+        return tmpMatrix;
     }
 
     MatrixList MatrixList::operator*( MatrixList matrix2 ) const{
@@ -1166,7 +1201,10 @@
             row++; 
             column = 1;
         }
-        return *newMatrix;
+
+        MatrixList tmpMatrix = *newMatrix;
+        delete newMatrix;
+        return tmpMatrix;
     }  
 
     void MatrixList::matrixSum( MatrixList matrix1, MatrixList matrix2 ){
@@ -1425,5 +1463,8 @@
             removeRow( size );
             size--;
         }
+
+        delete newMatrix;
+        
         return size;
     }
