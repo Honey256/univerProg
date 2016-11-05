@@ -238,6 +238,14 @@ void inFile( AEROFLOT* flight, int countRecords ){
 }
 
 int fromFile( AEROFLOT** flight, int *maxRecord, int *countRecords ){
+
+	for (int i = 0; i < *countRecords; i++){
+		memset((*flight)[i].destination,0,30);
+		(*flight)[i].flightNumber = 0;
+		memset((*flight)[i].planeType,0,30);		
+	}
+
+	(*countRecords) = 0;
 	// чтение из файла
 	std::ifstream in ("AEROFLOT2.txt", std::ifstream::in);
     in.seekg (-1,in.end);
