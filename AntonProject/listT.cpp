@@ -10,7 +10,6 @@ public:
     int flightNumber;
     std::string planeType;
 
-public:
 
     int getFlightNumber() const {
         return flightNumber;
