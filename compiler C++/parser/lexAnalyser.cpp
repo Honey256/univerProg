@@ -1,28 +1,41 @@
 #include <iostream>
 #include <fstream>      // std::ifstream
+#include <cstring>
 
+const char *localVarPath = new char[128];
+
+const int space = ' ';
 
 enum type{FIRSTWORD, TYPEOFOBJECT, KEYWORD, DOUBDIGIT, INTDIGIT, VAR, SOMEWORD, SEPARATOR, OPERATOR};
-enum keywords{	
-				DESCRIBE, UPDATE, INTO, VALUES, PRIMARY, KEY, TYPE, ADD, INDEX,	
-				CHANGE,	FIRST, AFTER, WHERE, ORDER, BY,LIMIT, ASC, DESC, FROM, SET, FIELDS, _NULL};
-const char *localVarPath = new char[100];
-struct Lexem{
-	short int type;
-	int number;
-	int intDigit;
-	double doubDigit;
-	std::string name;
-	unsigned int ID;
+
+enum varTypeList{INT, DOUBLE, STRING};
+
+class Register{
+public:
+	static int incrementValue;
+	unsigned long long ID;
+	unsigned short type : 2;
+	std::string strValue;
+	double value;
+	Register(){
+		ID = incrementValue;
+		incrementValue++;
+		type = 3;
+		strValue = "";
+		value = 0;
+
+	}
 };
 
+int Register::incrementValue = 0;
+
 struct Word{
-	const unsigned short int number;
+	const unsigned  short number : 5;
    	const char name[25];
 };
 
-const Word WordList[] =
- {
+
+const Word firstWordList[] = {
     {1, "CREATE"},
 	{2, "USE"},
 	{3, "SHOW"},
@@ -32,15 +45,17 @@ const Word WordList[] =
 	{7, "DELETE"},
 	{8, "SELECT"}
 };
+const unsigned firstWordListSize = 8;
 
-const Word typeOfOvjectsArray[] =
-{
+
+const Word typeOfOvjectsList[] = {
 	{1, "TABLE"},
 	{2, "DATABASE"}
 };
+const unsigned short typeOfObjectsSize = 2;
 
-const Word anotherKeywordsArray[] = 
-{
+
+const Word anotherKeywordsList[] = {
 	{1, "DESCRIBE"}, 
 	{2, "UPDATE"},
 	{3, "INTO"},
@@ -64,13 +79,28 @@ const Word anotherKeywordsArray[] =
 	{21, "FIELDS"}, 
 	{22, "_NULL"}
 };
-const int firstWordListSize = 8;
+const unsigned short anotherKeywordsListSize = 22;
+
+
+struct Lexem{
+	short int type;
+	int number;
+	int intDigit;
+	double doubDigit;
+	std::string name;
+	unsigned int ID;
+	Lexem(){
+
+	}
+};
 
 void lexAnalyser(const char* path){
 	localVarPath = path;
 	std::ifstream inFile(localVarPath, std::ifstream::in);
-	char *newArr = new char[50];
-	inFile.read(newArr, 5);
-	std::cout << newArr;
 	char sym;
+	
+	//while (sym != space){
+
+	//}
+
 }
