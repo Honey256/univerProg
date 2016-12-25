@@ -2,13 +2,48 @@
 #include <fstream>      // std::ifstream
 #include <cstring>
 
+void lexAnalyser(const char* path);
+
+unsigned int basicType( std::string firstWord );
+
+void fnCreate();
+
+void fnUse();
+
+void fnShow();
+
+void fnAlter();
+
+void fnDrop();
+
+void fnInsert();
+
+void fnDelete();
+
+void fnSelect();
+
+void start();
+
+//---------------------------------------------------------------------------------
+
+
+char ch;
+
 const char *localVarPath = new char[128];
+
+std::ifstream *inFile = new std::ifstream;
 
 const int space = ' ';
 
-enum type{FIRSTWORD, TYPEOFOBJECT, KEYWORD, DOUBDIGIT, INTDIGIT, VAR, SOMEWORD, SEPARATOR, OPERATOR};
+//---------------------------------------------------------------------------------
+
+
+enum type{FIRSTWORD, TYPEOFOBJECT, KEYWORD, VAR, SEPARATOR, OPERATOR};
 
 enum varTypeList{INT, DOUBLE, STRING};
+
+//---------------------------------------------------------------------------------
+
 
 class Register{
 public:
@@ -29,10 +64,34 @@ public:
 
 int Register::incrementValue = 0;
 
+//---------------------------------------------------------------------------------
+
+
+class Lexem{
+public:
+	short int type;
+	int number;
+	double digit;
+	std::string text;
+	std::string name;
+	unsigned int ID;
+	Lexem(){}
+};
+
+//---------------------------------------------------------------------------------
+
+
 struct Word{
 	const unsigned  short number : 5;
    	const char name[25];
 };
+
+const Word typeOfOvjectsList[] = {
+	{1, "TABLE"},
+	{2, "DATABASE"}
+};
+
+const unsigned short typeOfObjectsSize = 2;
 
 
 const Word firstWordList[] = {
@@ -46,13 +105,6 @@ const Word firstWordList[] = {
 	{8, "SELECT"}
 };
 const unsigned firstWordListSize = 8;
-
-
-const Word typeOfOvjectsList[] = {
-	{1, "TABLE"},
-	{2, "DATABASE"}
-};
-const unsigned short typeOfObjectsSize = 2;
 
 
 const Word anotherKeywordsList[] = {
@@ -81,26 +133,121 @@ const Word anotherKeywordsList[] = {
 };
 const unsigned short anotherKeywordsListSize = 22;
 
+//---------------------------------------------------------------------------------
 
-struct Lexem{
-	short int type;
-	int number;
-	int intDigit;
-	double doubDigit;
-	std::string name;
-	unsigned int ID;
-	Lexem(){
 
+unsigned int basicType( std::string firstWord ){
+
+	int i = 0;
+
+	while (firstWord != firstWordList[i].name && i != firstWordListSize) { i++; }
+	if (i == firstWordListSize){
+		std::cout << "baaaaaadssss";
+		return 0;
+	} else {
+		return firstWordList[i].number;
 	}
-};
+}
+
+//---------------------------------------------------------------------------------
 
 void lexAnalyser(const char* path){
 	localVarPath = path;
-	std::ifstream inFile(localVarPath, std::ifstream::in);
-	char sym;
-	
-	//while (sym != space){
+	inFile->open(localVarPath, std::ifstream::in);
 
-	//}
+	start();
+	//fnUse();
+	return;
 
 }
+
+
+void start(){
+	std::string mainWord = "";
+	ch = inFile->get();
+	while (ch == space){
+		ch = inFile->get();
+	}
+
+	while (ch != space && !inFile->eof()){
+		mainWord = mainWord + ch;
+		ch = inFile->get();
+
+	}
+	switch ( basicType( mainWord ) ){
+
+		case 1:
+			fnCreate();
+			break;
+
+		case 2:
+			fnUse();
+			break;
+
+		case 3:
+			fnShow();
+			break;
+
+		case 4:
+			fnAlter();
+			break;
+
+		case 5:
+			fnDrop();
+			break;
+
+		case 6:
+			fnInsert();
+			break;
+
+		case 7:
+			fnDelete();
+			break;
+
+		case 8:
+			fnSelect();
+			break;
+
+		case 0:
+			std::cerr << "syntax error";
+			break;
+			return;
+
+	}
+}
+
+//---------------------------------------------------------------------------------
+
+
+void fnCreate(){
+	std::cout << "createe" << std::endl;
+}
+
+void fnUse(){
+	std::cout << "usee" << std::endl;
+}
+
+void fnShow(){
+	std::cout << "showw" << std::endl;
+}
+
+void fnAlter(){
+	std::cout << "alterr" << std::endl;
+}
+
+void fnDrop(){
+	std::cout << "dropp" << std::endl;
+}
+
+void fnInsert(){
+	std::cout << "insertt" << std::endl;
+}
+
+void fnDelete(){
+	std::cout << "deletee" << std::endl;
+}
+
+void fnSelect(){
+	std::cout << "selectt" << std::endl;
+}
+
