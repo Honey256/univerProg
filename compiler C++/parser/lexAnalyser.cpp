@@ -5,33 +5,46 @@
 
 void lexAnalyser(const char* path);
 
-unsigned int basicType( std::string firstWord );
+void scaner();
 
 unsigned long long getID(std::string name);
 
 std::string getWord();
 
-void start();
+bool isSpace();
 
+bool isDigit();
 
-void fnCreate();
+bool isLetter();
 
-void fnUse();
+bool isCapital();
 
-void fnShow();
+void addInstance(int type, int number);
 
-void fnAlter();
+double stringToDigit(std::string str){
+	double digit = 0;
+	bool flag = 0;
+	int i = 0;
+	int flagIndex = 0;
 
-void fnDrop();
+	while (i != str.length()){
+		if (str[i] == '.'){
+			flag = 1;
+			i++;
+		}
 
-void fnInsert();
+		if (flag == 1){
+			flagIndex++;
+		}
 
-void fnDelete();
+		digit = digit * 10 + str[i] - 48;
+		i++;
+	}
 
-void fnSelect();
-
-
-void varLexem(unsigned short type);
+	for (int j = 0; j < flagIndex; j++){
+		digit /= 10;
+	}
+}
 
 
 //---------------------------------------------------------------------------------
@@ -45,14 +58,17 @@ std::ifstream *inFile = new std::ifstream;
 
 const int space = ' ';
 
+const unsigned short keywordsListSize = 31;
+
+
 //---------------------------------------------------------------------------------
 
 
-enum type{SYSTEMFLAGS, FIRSTWORD, TYPEOFOBJECT, KEYWORD, VAR, VALUE, SEPARATOR, OPERATOR};
+enum type{KEYWORD, VAR, DIGIT, TEXT, VALUE, SEPARATOR, OPERATOR, SYSTEMFLAGS};
 
 enum typeList{DEFAULT, INT, DOUBLE, STRING, DATABASE, TABLE};
 
-enum systemFlags{BEGIN, ENDOFCOMAND, EoF};
+enum systemFlags{START, BEGIN, END, EoF};
 
 //---------------------------------------------------------------------------------
 
@@ -92,16 +108,17 @@ public:
 	Lexem(){}
 
 public:
-	void initLexem( unsigned short newType, int newNumber ){
+	Lexem( unsigned short newType, int newNumber ){
 		type = newType;
 		number = newNumber;
 	}
 
-	void initValue(unsigned short newType, int newNumber, double newDigit, std::string newText, std::string newName){
+	Lexem(unsigned short newType, int newNumber, double newDigit, std::string newText, std::string newName){
 		type = newType;
 		number = newNumber;
 		int intTest = newDigit;
 		if (newType == VAR){
+
 			name = newName;
 			ID = getID( newName );
 		}
@@ -129,6 +146,8 @@ public:
 
 std::vector<Lexem> lexemArray;
 
+
+
 //---------------------------------------------------------------------------------
 
 
@@ -137,7 +156,8 @@ struct Word{
    	const char name[25];
 };
 
-const Word firstWordList[] = {
+
+const Word keywordsList[] = {
     {1, "CREATE"},
 	{2, "USE"},
 	{3, "SHOW"},
@@ -145,20 +165,7 @@ const Word firstWordList[] = {
 	{5, "DROP"},
 	{6, "INSERT"},
 	{7, "DELETE"},
-	{8, "SELECT"}
-};
-const unsigned firstWordListSize = 8;
-
-
-const Word anotherKeywordsList[] = {
-	{1, "DESCRIBE"}, 
-	{2, "UPDATE"},
-	{3, "INTO"},
-	{4, "VALUES"}, 
-	{5, "PRIMARY"}, 
-	{6, "KEY"}, 
-	{7, "TYPE"}, 
-	{8, "ADD"}, 
+	{8, "SELECT"},
 	{9, "INDEX"},	
 	{10, "CHANGE"},	
 	{11, "FIRST"}, 
@@ -172,26 +179,133 @@ const Word anotherKeywordsList[] = {
 	{19, "FROM"}, 
 	{20, "SET"}, 
 	{21, "FIELDS"}, 
-	{22, "_NULL"}
+	{22, "_NULL"},
+	{23, "DESCRIBE"}, 
+	{24, "UPDATE"},
+	{25, "INTO"},
+	{26, "KEY"}, 
+	{27, "TYPE"}, 
+	{28, "ADD"}, 
+	{29, "VALUES"}, 
+	{30, "PRIMARY"},
+	{31, "*"} 
 };
-const unsigned short anotherKeywordsListSize = 22;
 
 //---------------------------------------------------------------------------------
 
 
-unsigned int basicType( std::string firstWord ){
+class FiniteStateMachine{
 
-	int i = 0;
+private:
+	static std::string buffer;
 
-	while (firstWord != firstWordList[i].name && i != firstWordListSize) { i++; }
+private:
+	static void isKeywordLexem(){
 
-	if (i == firstWordListSize){
-		return 0;
-	
-	} else {
-		return firstWordList[i].number;
+		buffer = "";
+
+		bool flag = 0;
+
+		int i = 0;
+
+		while ( isLetter() || ch == '_' ){
+			buffer += ch;
+			ch = inFile->get();
+		}
+
+		while ( i != keywordsListSize ){
+
+			if ( buffer == keywordsList[i].name ){
+				flag = 1;
+				break;
+			}
+			i++;
+		}
+
 	}
-}
+
+	static void isDigitLexem(){
+
+		buffer = "";
+		int flag = 0;
+
+		while( isDigit() || ch == '.'){
+			if (ch == '.'){
+				flag++;
+			}
+			buffer += ch;
+			ch = inFile->get();
+		}
+
+		if (flag > 1){
+			std::cerr << "Syntax error";
+			return;
+		}
+	}
+
+	static void isStringLexem(){
+
+		buffer = "";
+		ch = inFile->get();
+
+		while(ch != '"'){
+			buffer += ch;
+			ch = inFile->get();
+		}
+
+
+
+	}
+
+	static void (*state[3])();
+
+public:
+	void executor(){
+		addInstance(SYSTEMFLAGS, START);
+
+		while ( !inFile->eof() ){
+
+			addInstance(SYSTEMFLAGS, BEGIN);
+			ch = inFile->get();
+
+			while( isSpace() ){
+				ch = inFile->get();
+
+				if ( !inFile->eof() ){
+					addInstance(SYSTEMFLAGS, END);
+					break;
+				}
+			}
+
+			if (ch =='"'){
+				state[TEXT]();
+
+			} else if ( isDigit() ){
+				state[DIGIT]();
+			}
+
+			if (ch == ';'){
+				addInstance(SYSTEMFLAGS, END);
+				continue;
+
+			}
+
+
+			addInstance(SYSTEMFLAGS, END);
+		}
+
+		addInstance(SYSTEMFLAGS, EoF);
+
+
+		
+	}
+};
+
+std::string FiniteStateMachine::buffer;
+
+void (*FiniteStateMachine::state[3])() = {isKeywordLexem, isDigitLexem, isStringLexem};
+
+//---------------------------------------------------------------------------------
 
 unsigned long long getID(std::string name){
 
@@ -224,11 +338,43 @@ std::string getWord(){
 	return word;
 }
 
-void endOfComand(){
-	Lexem *end = new Lexem();
-	end->type = SYSTEMFLAGS;
-	end->number = ENDOFCOMAND;
-	lexemArray.push_back(*end);
+
+
+void addInstance(int type, int number){
+		Lexem *instance = new Lexem(type, number);
+		lexemArray.push_back(*instance);
+}
+
+bool isSpace(){
+	if (ch == space){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool isDigit(){
+	if (ch > 47 && ch < 58){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool isLetter(){
+	if (ch > 64 && ch < 91 || ch > 96 && ch < 123){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool isCapital(){
+	if (ch > 64 && ch < 91){
+		return true;
+	} else {
+		return false;
+	}
 }
 
 //---------------------------------------------------------------------------------
@@ -236,143 +382,18 @@ void endOfComand(){
 void lexAnalyser(const char* path){
 	localVarPath = path;
 	inFile->open(localVarPath, std::ifstream::in);
-
-	start();
+	scaner();
 	return;
 
 }
 
+void scaner(){
 
-void start(){
-
-	Lexem *start = new Lexem();
-	start->type = SYSTEMFLAGS;
-	start->number = BEGIN;
-	lexemArray.push_back(*start);
-
-	while (!inFile->eof()){
-
-		while (ch == space || ch == '\n' && !inFile->eof()){
-			ch = inFile->get();
-		}
-
-		if (inFile->eof()){
-			for (int i = 0; i < lexemArray.size(); i++){
-				lexemArray[i].print();
-			}
-			return;
-		}
-
-		std::string mainWord = getWord();
-
-		switch ( basicType( mainWord ) ){
-
-			case 1:
-				fnCreate();
-				break;
-
-			case 2:
-				fnUse();
-				break;
-
-			case 3:
-				fnShow();
-				break;
-
-			case 4:
-				fnAlter();
-				break;
-
-			case 5:
-				fnDrop();
-				break;
-
-			case 6:
-				fnInsert();
-				break;
-
-			case 7:
-				fnDelete();
-				break;
-
-			case 8:
-				fnSelect();
-				break;
-
-			case 0:
-				std::cerr << "syntax error";
-				break;
-				return;
-
-		}
-	}
 }
+
+
+
 
 //---------------------------------------------------------------------------------
 
 
-void fnCreate(){
-	Lexem *newLex = new Lexem();
-	newLex->initLexem(FIRSTWORD, 1);
-	lexemArray.push_back(*newLex);
-}
-
-void fnUse(){
-	Lexem *newLex = new Lexem();
-	newLex->initLexem(FIRSTWORD, 2);
-	lexemArray.push_back(*newLex);
-	varLexem(DATABASE);
-	if (ch == ';'){
-		ch = inFile->get();
-		endOfComand();
-	}
-
-
-}
-
-void fnShow(){
-	Lexem *newLex = new Lexem();
-	newLex->initLexem(FIRSTWORD, 3);
-	lexemArray.push_back(*newLex);
-}
-
-void fnAlter(){
-	Lexem *newLex = new Lexem();
-	newLex->initLexem(FIRSTWORD, 4);
-	lexemArray.push_back(*newLex);
-
-}
-
-void fnDrop(){
-	Lexem *newLex = new Lexem();
-	newLex->initLexem(FIRSTWORD, 5);
-	lexemArray.push_back(*newLex);
-}
-
-void fnInsert(){
-	Lexem *newLex = new Lexem();
-	newLex->initLexem(FIRSTWORD, 6);
-	lexemArray.push_back(*newLex);
-}
-
-void fnDelete(){
-	Lexem *newLex = new Lexem();
-	newLex->initLexem(FIRSTWORD, 7);
-	lexemArray.push_back(*newLex);
-}
-
-void fnSelect(){
-	Lexem *newLex = new Lexem();
-	newLex->initLexem(FIRSTWORD, 8);
-	lexemArray.push_back(*newLex);
-}
-
-//---------------------------------------------------------------------------------
-
-
-void varLexem(unsigned short type){
-	std::string word = getWord();
-	Lexem *newLex = new Lexem();
-	newLex->initValue(VAR, type, 0, "", word);
-	lexemArray.push_back(*newLex);
-}
