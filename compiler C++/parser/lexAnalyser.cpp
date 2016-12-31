@@ -19,32 +19,15 @@ bool isLetter();
 
 bool isCapital();
 
+bool isSeparator();
+
+bool isOperator();
+
 void addInstance(int type, int number);
 
-double stringToDigit(std::string str){
-	double digit = 0;
-	bool flag = 0;
-	int i = 0;
-	int flagIndex = 0;
+void addInstance(unsigned short type, int number, double digit, std::string text, std::string name);
 
-	while (i != str.length()){
-		if (str[i] == '.'){
-			flag = 1;
-			i++;
-		}
-
-		if (flag == 1){
-			flagIndex++;
-		}
-
-		digit = digit * 10 + str[i] - 48;
-		i++;
-	}
-
-	for (int j = 0; j < flagIndex; j++){
-		digit /= 10;
-	}
-}
+double stringToDigit(std::string str);
 
 
 //---------------------------------------------------------------------------------
@@ -58,15 +41,19 @@ std::ifstream *inFile = new std::ifstream;
 
 const int space = ' ';
 
-const unsigned short keywordsListSize = 31;
+const unsigned short keywordsListSize = 36;
+
+const unsigned short separatorListSize = 7;
+
+const unsigned short operatorListSize = 8;
 
 
 //---------------------------------------------------------------------------------
 
 
-enum type{KEYWORD, VAR, DIGIT, TEXT, VALUE, SEPARATOR, OPERATOR, SYSTEMFLAGS};
+enum type{KEYWORD, DIGIT, TEXT, SEPARATOR, OPERATOR, VALUE, VAR, SYSTEMFLAGS};
 
-enum typeList{DEFAULT, INT, DOUBLE, STRING, DATABASE, TABLE};
+enum typeList{DEFAULT, INT, DOUBLE, STRING};
 
 enum systemFlags{START, BEGIN, END, EoF};
 
@@ -99,13 +86,12 @@ std::vector<Register> registerArray;
 
 class Lexem{
 public:
-	unsigned short type : 3;
+	unsigned short type : 4;
 	int number;
 	double digit;
 	std::string text;
 	std::string name;
 	unsigned int ID;
-	Lexem(){}
 
 public:
 	Lexem( unsigned short newType, int newNumber ){
@@ -152,7 +138,7 @@ std::vector<Lexem> lexemArray;
 
 
 struct Word{
-	const unsigned  short number : 5;
+	const unsigned  short number : 6;
    	const char name[25];
 };
 
@@ -188,8 +174,41 @@ const Word keywordsList[] = {
 	{28, "ADD"}, 
 	{29, "VALUES"}, 
 	{30, "PRIMARY"},
-	{31, "*"} 
+	{31, "*"},
+	{32, "int"},
+	{33, "text"}, 
+	{34, "double"},
+	{35, "NOT"},
+	{36, "auto_increment"}
+
 };
+
+struct Letter{
+	const unsigned  short number : 6;
+   	const char name;
+};
+
+const Letter separatorList[] = {
+	{1, ','},
+	{2, '('},
+	{3, ')'},
+	{4, '['},
+	{5, ']'},
+	{6, '{'},
+	{7, '}'}
+};
+
+const Word operatorList[] = {
+	{1, "="},
+	{2, "=="},
+	{3, "!="},
+	{4, "!"},
+	{5, ">="},
+	{6, "<="},
+	{7, "||"},
+	{8, "&&"}
+};
+
 
 //---------------------------------------------------------------------------------
 
@@ -203,12 +222,9 @@ private:
 	static void isKeywordLexem(){
 
 		buffer = "";
-
-		bool flag = 0;
-
 		int i = 0;
 
-		while ( isLetter() || ch == '_' ){
+		while ( isLetter() || ch == '_' || ch == '*'){
 			buffer += ch;
 			ch = inFile->get();
 		}
@@ -216,11 +232,14 @@ private:
 		while ( i != keywordsListSize ){
 
 			if ( buffer == keywordsList[i].name ){
-				flag = 1;
-				break;
+				addInstance(KEYWORD, keywordsList[i].number);
+				return;
 			}
 			i++;
 		}
+
+		addInstance(VAR, DEFAULT, 0, "", buffer);
+
 
 	}
 
@@ -241,6 +260,19 @@ private:
 			std::cerr << "Syntax error";
 			return;
 		}
+
+		double newDigit = stringToDigit( buffer );
+
+		double tmpDigit = (int)newDigit;
+
+		if ( newDigit != tmpDigit){
+		addInstance(DIGIT, INT, newDigit, "", "");
+
+		} else {
+			addInstance(DIGIT, DOUBLE, newDigit, "", "");
+		}
+
+
 	}
 
 	static void isStringLexem(){
@@ -252,43 +284,99 @@ private:
 			buffer += ch;
 			ch = inFile->get();
 		}
+		ch = inFile->get();
 
-
-
+		addInstance(TEXT, STRING, 0, buffer, "");
 	}
 
-	static void (*state[3])();
+	static void isSeparatorLexem(){
+
+		for (int i = 0; i < separatorListSize; i++){
+
+
+			if ( ch == separatorList[i].name){
+				addInstance(SEPARATOR, separatorList[i].number);
+				return;
+			}
+		}
+		std::cerr << "Syntax error N3";
+		return;
+	}
+
+	static void isOperatorLexem(){
+
+		buffer = "";
+
+		while ( isOperator()){
+			buffer += ch;
+			ch = inFile->get();
+		}
+		for (int i = 0; i < operatorListSize; i++){
+
+
+			if ( buffer == operatorList[i].name){
+				addInstance(OPERATOR, operatorList[i].number);
+
+				return;
+				
+			}
+			std::cerr << "Syntax error N3";
+			return;
+		}
+	}
+
+	static void (*state[])();
 
 public:
 	void executor(){
 		addInstance(SYSTEMFLAGS, START);
+		ch = inFile->get();
+
 
 		while ( !inFile->eof() ){
 
-			addInstance(SYSTEMFLAGS, BEGIN);
-			ch = inFile->get();
-
-			while( isSpace() ){
+			while( isSpace() || ch == '\n'){
 				ch = inFile->get();
 
-				if ( !inFile->eof() ){
-					addInstance(SYSTEMFLAGS, END);
+				if ( inFile->eof() ){
+					addInstance(SYSTEMFLAGS, EoF);
+					return;
 					break;
 				}
 			}
 
-			if (ch =='"'){
+			if ( isLetter() ){
+				state[KEYWORD]();
+				continue;
+
+			} else if (ch =='"'){
 				state[TEXT]();
+				continue;
+
 
 			} else if ( isDigit() ){
 				state[DIGIT]();
-			}
-
-			if (ch == ';'){
-				addInstance(SYSTEMFLAGS, END);
 				continue;
 
+			} else if ( isSeparator() ){
+				state[SEPARATOR]();
+				ch = inFile->get();
+				continue;
+
+			} else if ( isOperator() ){
+				state[OPERATOR]();
+				ch = inFile->get();
+				continue;
+
+			} else if (ch == ';'){
+				addInstance(SYSTEMFLAGS, END);
+				ch = inFile->get();
+				continue;
+			} else {
+				std::cerr << "Syntax Error N2";
+				return;
 			}
+
 
 
 			addInstance(SYSTEMFLAGS, END);
@@ -303,7 +391,7 @@ public:
 
 std::string FiniteStateMachine::buffer;
 
-void (*FiniteStateMachine::state[3])() = {isKeywordLexem, isDigitLexem, isStringLexem};
+void (*FiniteStateMachine::state[])() = {isKeywordLexem, isDigitLexem, isStringLexem, isSeparatorLexem, isOperatorLexem};
 
 //---------------------------------------------------------------------------------
 
@@ -345,6 +433,41 @@ void addInstance(int type, int number){
 		lexemArray.push_back(*instance);
 }
 
+void addInstance(unsigned short type, int number, double digit, std::string text, std::string name){
+		Lexem *instance = new Lexem(type, number, digit, text, name);
+		lexemArray.push_back(*instance);
+}
+
+double stringToDigit(std::string str){
+
+	double digit = 0;
+	bool flag = 0;
+	int i = 0;
+	int flagIndex = 0;
+
+	while (i != str.length()){
+
+		if (str[i] == '.'){
+			flag = 1;
+			i++;
+		}
+
+		if (flag == 1){
+			flagIndex++;
+		}
+
+		digit = digit * 10 + str[i] - 48;
+		i++;
+	}
+
+	for (int j = 0; j < flagIndex; j++){
+		digit = digit / 10;
+	}
+
+	return digit;
+}
+
+
 bool isSpace(){
 	if (ch == space){
 		return true;
@@ -377,17 +500,38 @@ bool isCapital(){
 	}
 }
 
+bool isSeparator(){
+	if (ch == ',' || ch == '(' || ch == ')' || ch == '{' || ch == '}' || ch == '[' || ch == ']'){
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool isOperator(){
+	if (ch == '=' || ch == '!' || ch == '>' || ch == '<' || ch == '&' || ch == '|'){
+		return true;
+	} else {
+		return false;
+	}
+}
+
 //---------------------------------------------------------------------------------
 
 void lexAnalyser(const char* path){
 	localVarPath = path;
 	inFile->open(localVarPath, std::ifstream::in);
 	scaner();
+	for (int i = 0; i < lexemArray.size(); i++){
+		lexemArray[i].print();
+	}
 	return;
 
 }
 
 void scaner(){
+	FiniteStateMachine *newAutomata = new FiniteStateMachine();
+	newAutomata->executor();
 
 }
 

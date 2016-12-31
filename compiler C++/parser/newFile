@@ -1,2 +1,16 @@
-USE new1; 
-CREATE SHOW DROP DELETE ALTER INSERT SELECT 
+CREATE DATABASE db_name;
+USE db_name;
+CREATE TABLE posts (
+  id_post int(11) NOT NULL auto_increment,
+  name text,
+  url text,
+  file text,
+  author text,
+  id_author int(6) default NULL,
+  hide int(1) default NULL,
+  time datetime default NULL,
+  parent_post int(11) default NULL,
+  id_theme int(11) default NULL,
+  PRIMARY KEY  (id_post)
+) TYPE=MyISAM;
+ALTER TABLE forums ADD test int (10) text AFTER name;
