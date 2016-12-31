@@ -1,5 +1,6 @@
 #include <iostream>
 #include "lexAnalyser.cpp"
+//main
 
 int main(int argc, char const *argv[]){
 	if ( argc == 1 ){

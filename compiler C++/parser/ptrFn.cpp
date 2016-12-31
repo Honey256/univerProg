@@ -1,5 +1,5 @@
 #include "iostream"
-
+//array of pointers on fn
 void fnnn(int value);
 
 
