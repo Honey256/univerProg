@@ -1,5 +1,5 @@
 #include <iostream>
-#include "lexAnalyser.cpp"
+#include "lexAnalyser.h"
 //main
 
 int main(int argc, char const *argv[]){
